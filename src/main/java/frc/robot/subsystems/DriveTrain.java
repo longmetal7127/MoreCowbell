@@ -70,8 +70,8 @@ public class DriveTrain extends SubsystemBase {
     gyro.reset();
   }
 
-  public void joystickDrive(double turn, double move){ //Takes in doubles for translation and rotation(both -1 to 1)
-
+  public void drive(double x, double y, double z){ //Takes in doubles for translation and rotation(both -1 to 1)
+m_drive.driveCartesian(x, y, z);
   }
 
   public void resetEncoders(){//Sets the position of each encoder to zero to restart counting
