@@ -82,7 +82,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    m_robotContainer.m_Drive.m_drive.driveCartesian(-m_robotContainer.m_stick.getY(), m_robotContainer.m_stick.getX(), m_robotContainer.m_stick.getZ());
   }
 
   @Override
