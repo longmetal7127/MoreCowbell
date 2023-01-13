@@ -15,12 +15,13 @@ package frc.robot;
 public final class Constants {
   public static final int kDriverControllerPort = 0;
   //Drive train
-  public static int leftMaster = 3; 
-  public static int leftFollower = 4;
-  public static int rightMaster = 1;
-  public static int rightFollower = 2;
+  public static int leftFront = 3; 
+  public static int leftBack = 4;
+  public static int rightFront = 1;
+  public static int rightBack = 2;
 
   //Driverstation ports 
   public static int joystickPort = 0;//USB port on driver station computer
   public static int xboxPort = 1;
 }
+
