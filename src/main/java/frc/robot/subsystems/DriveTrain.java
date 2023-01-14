@@ -45,8 +45,17 @@ public class DriveTrain extends SubsystemBase {
   public DriveTrain() {
 
     // Restoring Factory Defaults for each motor controller
-    //m_rightFront.setInverted(true);
-    //m_rightBack.setInverted(true);
+
+
+    m_leftBack.restoreFactoryDefaults();
+    m_rightBack.restoreFactoryDefaults();
+    m_leftFront.restoreFactoryDefaults();
+    m_rightFront.restoreFactoryDefaults();
+
+    m_rightFront.setInverted(true);
+    m_rightBack.setInverted(true);
+
+
 
     gyro.calibrate();
 
@@ -59,8 +68,8 @@ public class DriveTrain extends SubsystemBase {
 
     // Feed the DifferentialDrive the two motor controllers
     m_drive = new MecanumDrive(m_leftFront, m_leftBack, m_rightFront, m_rightBack);
-   // m_drive.setMaxOutput(0.75);
-   // m_drive.setDeadband(0.05);
+    m_drive.setMaxOutput(0.75);
+    m_drive.setDeadband(0.05);
   }
 
   public double getGyroAngle() {
