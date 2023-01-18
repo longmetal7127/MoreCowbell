@@ -13,6 +13,12 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static final class CameraVision {
+    public final String cameraName = "camera";
+    public final int ViewportWidth = 640;
+    public final int ViewportHeight = 480;
+}
+
   public static final int kDriverControllerPort = 0;
   //Drive train
   public static int leftFront = 3; 
@@ -23,5 +29,18 @@ public final class Constants {
   //Driverstation ports 
   public static int joystickPort = 0;//USB port on driver station computer
   public static int xboxPort = 1;
+
+  // lmao
+  public static double targetHeight = 100; //inches
+  public static double limelightHeight = 5; //inches
+  public static double limelightOffset = 0; // inches from limelight to intake
+  public static double limelightAngle = 90;
+
+  public static double closeDistance = 60;
+  public static double middleDistance = 70;//76;//81.6;
+  public static double farDistance = 105;//96;//102;
+
+  public static double restingSpeed = 0.4;
+
 }
 

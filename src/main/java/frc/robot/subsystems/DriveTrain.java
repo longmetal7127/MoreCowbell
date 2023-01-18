@@ -46,6 +46,8 @@ public class DriveTrain extends SubsystemBase {
 
     // Restoring Factory Defaults for each motor controller
 
+    System.out.print(
+      "i hate you too");
 
     m_leftBack.restoreFactoryDefaults();
     m_rightBack.restoreFactoryDefaults();
