@@ -6,4 +6,5 @@
 
 Made by Graham and Teddy
 
-https://docs.photonvision.org/en/latest/docs/examples/gettinginrangeofthetarget.html
+https://www.firstinspires.org/robotics/frc/playing-field
+
