@@ -10,3 +10,10 @@ https://www.firstinspires.org/robotics/frc/playing-field
 
 https://docs.limelightvision.io/en/latest/
 
+
+Saturday Plans
+
+Map out course Group A
+Autonomous Group B
+
+
