@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.Sensors;
+import frc.robot.subsystems.AprilTags;
 import frc.robot.subsystems.Vision;
 
 /**
@@ -24,7 +24,7 @@ import frc.robot.subsystems.Vision;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DriveTrain m_drive = new DriveTrain();
-  public final Sensors sensors = new Sensors();
+  public final AprilTags april = new AprilTags();
   private final Vision vision = new Vision();
   public static Joystick joystick = new Joystick(Constants.joystickPort);
   private final JoystickDrive joystickDrive = new JoystickDrive(m_drive);

@@ -19,6 +19,7 @@ public NetworkTableEntry tv = table.getEntry("tv");
 public NetworkTableEntry tx = table.getEntry("tx");
 public NetworkTableEntry ty = table.getEntry("ty");
 public NetworkTableEntry ta = table.getEntry("ta");
+public NetworkTableEntry botpose = table.getEntry("botpose");
 
 public NetworkTableEntry ledMode = table.getEntry("ledMode");
 

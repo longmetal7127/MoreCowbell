@@ -25,9 +25,9 @@ public class DriveTrain extends SubsystemBase {
   public CANSparkMax m_rightFront = new CANSparkMax(Constants.rightFront, MotorType.kBrushless);
   public CANSparkMax m_rightBack = new CANSparkMax(Constants.rightBack, MotorType.kBrushless);
 
-  SlewRateLimiter slewX = new SlewRateLimiter(0.75);
-  SlewRateLimiter slewY = new SlewRateLimiter(0.75);
-  SlewRateLimiter slewZ = new SlewRateLimiter(0.75);
+  public SlewRateLimiter slewX = new SlewRateLimiter(0.75);
+  public SlewRateLimiter slewY = new SlewRateLimiter(0.75);
+  public SlewRateLimiter slewZ = new SlewRateLimiter(0.75);
 
   // Create a new DifferentialDrive object
   public MecanumDrive m_drive;
@@ -38,17 +38,8 @@ public class DriveTrain extends SubsystemBase {
 
   public ADXRS450_Gyro gyro = new ADXRS450_Gyro();
 
-  double error;
-  double kP = 0.05;
-  
-
   public DriveTrain() {
-
     // Restoring Factory Defaults for each motor controller
-
-    System.out.print(
-      "i hate you too");
-
     m_leftBack.restoreFactoryDefaults();
     m_rightBack.restoreFactoryDefaults();
     m_leftFront.restoreFactoryDefaults();
@@ -56,8 +47,6 @@ public class DriveTrain extends SubsystemBase {
 
     m_rightFront.setInverted(true);
     m_rightBack.setInverted(true);
-
-
 
     gyro.calibrate();
 
@@ -71,30 +60,19 @@ public class DriveTrain extends SubsystemBase {
     // Feed the DifferentialDrive the two motor controllers
     m_drive = new MecanumDrive(m_leftFront, m_leftBack, m_rightFront, m_rightBack);
     m_drive.setMaxOutput(0.75);
-    m_drive.setDeadband(0.05);
+    m_drive.setDeadband(0.1);
   }
+  
+  // Takes in doubles for translation and rotation(both -1 to 1)
+  public void drive(double y, double x, double z) {
+    // Swapping x and y because of joystick
+    // Chilling with z because sometimes you accidentally twist when trying to go forward/back/left/right
+    if(z > -0.3 && z < 0.3) {
+      z = 0;
+    }
 
-  public double getGyroAngle() {
-    return gyro.getAngle();
-  }
-
-  public void resetGyro() {
-    gyro.reset();
-  }
-
-  public void drive(double y, double x, double z) { // Takes in doubles for translation and rotation(both -1 to 1)
-    m_drive.driveCartesian(y, x, z);
-  }
-
-  public void resetEncoders() {// Sets the position of each encoder to zero to restart counting
-    m_leftEncoder.setPosition(0);
-    m_rightEncoder.setPosition(0);
-
-  }
-
-  public double getEncoder() {// returns the current number of motor rotations since the encoders were reset
-    return m_leftEncoder.getPosition();
-
+    //m_drive.driveCartesian(y, x, z);
+    m_drive.driveCartesian(slewX.calculate(y), slewY.calculate(x), slewZ.calculate(z));
   }
 
   @Override

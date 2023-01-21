@@ -37,11 +37,9 @@ import frc.robot.Constants;
  * (or something like that), is connected via USB
  * to the RoboRIO.
  */
-public class Sensors extends SubsystemBase {
+public class AprilTags extends SubsystemBase {
   /** Creates a new CamRIO. */
-  public Sensors() {
-    System.out.print(
-      "i hate you");
+  public AprilTags() {
   }
 
   // set vision processing on another thread so it does not slow down the main thread
@@ -55,12 +53,10 @@ public class Sensors extends SubsystemBase {
    * call this in robotInit()
    */
   public void camInit() {
-    System.out.print("camInit");
 
     //this is where the code gets really ugly
     //init visionThread
     visionThread = new Thread(() -> {
-        System.out.println("hiii");
         // Get the USB camera from CameraServer
         UsbCamera camera = CameraServer.startAutomaticCapture();
 
@@ -178,7 +174,6 @@ public class Sensors extends SubsystemBase {
         }
         
         //detector.close();
-        
       });
     
     visionThread.setDaemon(true);
