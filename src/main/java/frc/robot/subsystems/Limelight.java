@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
-public class Vision extends SubsystemBase {
+public class Limelight extends SubsystemBase {
 
 public NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
 public NetworkTableEntry tv = table.getEntry("tv");
@@ -20,14 +20,13 @@ public NetworkTableEntry tx = table.getEntry("tx");
 public NetworkTableEntry ty = table.getEntry("ty");
 public NetworkTableEntry ta = table.getEntry("ta");
 public NetworkTableEntry botpose = table.getEntry("botpose");
-
 public NetworkTableEntry ledMode = table.getEntry("ledMode");
 
 public double distanceInFeet;
 public double distance;
 public double theta;
 
-  public Vision() {
+  public Limelight() {
       //ledMode.setNumber(3);//Set led off
   }
 
