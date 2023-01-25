@@ -24,9 +24,9 @@ import frc.robot.subsystems.Limelight;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DriveTrain m_drive = new DriveTrain();
-  public final Autonomous m_autocommand = new Autonomous(m_drive);
+  public final Limelight m_limelight = new Limelight();
+  public final Autonomous m_autocommand = new Autonomous(m_drive, m_limelight);
   public final AprilTags april = new AprilTags();
-  private final Limelight limelight = new Limelight();
   public static Joystick joystick = new Joystick(Constants.joystickPort);
   private final JoystickDrive joystickDrive = new JoystickDrive(m_drive);
 
@@ -51,11 +51,9 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    
   }
 
   /**

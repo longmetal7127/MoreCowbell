@@ -8,16 +8,16 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveTrain;
-
+import frc.robot.subsystems.Limelight;
 public final class Autonomous extends SequentialCommandGroup{
   /** Example static factory for an autonomous command. */
-  public Autonomous(DriveTrain drive) {
-    DriveTrain d = drive;
+  public Autonomous(DriveTrain m_drive, Limelight m_limelight) {
+
     double x = 0.5; //drives forward
     double y = 0;
     double z = 0;
     addCommands(
-      new DriveXYZ(d, y, x, z)
+      new BotPoseOrient(m_drive, m_limelight )
     );
   }
   
