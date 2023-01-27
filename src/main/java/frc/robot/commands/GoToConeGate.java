@@ -1,10 +1,11 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DriverStation;
 public class GoToConeGate {
     public void goCone(int gatenum, String team) {
         switch (gatenum){
             case 1:
-                if (team.equalsIgnoreCase("Blue")) {
+                if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
                     //goTo(x, y)
                 }
                 else {
@@ -12,7 +13,7 @@ public class GoToConeGate {
                 }
                 break;
             case 2:
-                if (team.equalsIgnoreCase("Blue")) {
+                if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
                 //goTo(x, y)
                 }
                 else {
@@ -20,7 +21,7 @@ public class GoToConeGate {
                 }
                 break;
             case 3:
-                if (team.equalsIgnoreCase("Blue")) {
+                if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
                     //goTo(x, y)
                 }
                 else {
