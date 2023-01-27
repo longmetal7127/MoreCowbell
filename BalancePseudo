@@ -1,0 +1,15 @@
+// Balance shortcut pressed?
+  //Yes:
+    // Pitch < 0, > 0, or == 0?
+      // Pitch == 0:
+        // Yes: Cut motors, deploy brakes, end balancing program
+      // Pitch < 0:
+        // Move robot backwards on x-axis
+          // Is pitch beginning to shift?
+           // No: Continue moving backwards
+           // Yes: Cut motors, deploy brakes, end balancing program
+      // Pitch > 0:
+        // Move robot forwards on x-axis
+         // Is pitch beginning to shift?
+          // No: Continue moving forwards
+          // Yes: Cut motors, deploy brakes, end balancing program
