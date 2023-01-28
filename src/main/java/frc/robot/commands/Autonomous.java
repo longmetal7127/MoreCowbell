@@ -12,12 +12,8 @@ import frc.robot.subsystems.Limelight;
 public final class Autonomous extends SequentialCommandGroup{
   /** Example static factory for an autonomous command. */
   public Autonomous(DriveTrain m_drive, Limelight m_limelight) {
-
-    double x = 0.5; //drives forward
-    double y = 0;
-    double z = 0;
     addCommands(
-      new BotPoseOrient(m_drive, m_limelight )
+      new GoTo(m_drive, m_limelight, 0, -4, 0.15, 0.05)
     );
   }
   

@@ -4,44 +4,48 @@
 
 package frc.robot.subsystems;
 
-import java.lang.module.ResolutionException;
-
+import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.RobotContainer;
 
 public class Limelight extends SubsystemBase {
-
-  private DoubleArraySubscriber posesub;
-  private DoubleArraySubscriber camtransub;
   private NetworkTable m_table;
-
-  private Translation3d tran3d;
-  private Rotation3d r3d;
-  private Pose3d p3d;
+  private DoubleArraySubscriber posesub;
 
   public Limelight() {
+    m_table = NetworkTableInstance.getDefault().getTable("limelight");
+    posesub = m_table.getDoubleArrayTopic("botpose").subscribe(new double[] {});
   }
 
   public Pose3d getRobotPose() {
-    m_table = NetworkTableInstance.getDefault().getTable("limelight");
-
-    posesub = m_table.getDoubleArrayTopic("botpose").subscribe(new double[] {});
-
     double[] result = posesub.get();
-    tran3d = new Translation3d(result[0], result[1], result[2]);
-    r3d = new Rotation3d(result[3], result[4], result[4]);
-    p3d = new Pose3d(tran3d, r3d);
-    return p3d;
 
+    Translation3d tran3d = new Translation3d(result[0], result[1], result[2]);
+    Rotation3d r3d = new Rotation3d(result[3], result[4], result[5]);
+    return new Pose3d(tran3d, r3d);
+  }
+
+  private LinearFilter mfX = LinearFilter.movingAverage(3);
+  private LinearFilter mfY = LinearFilter.movingAverage(3);
+  private LinearFilter mfZ = LinearFilter.movingAverage(3);
+
+  public Pose3d getSmoothRobotPose() {
+    double[] result = posesub.get();
+    
+    Translation3d tran3d = new Translation3d(
+      mfX.calculate(result[0]),
+      mfY.calculate(result[1]),
+      mfZ.calculate(result[2])
+    );
+    Rotation3d r3d = new Rotation3d(result[3], result[4], result[5]);
+
+    return new Pose3d(tran3d, r3d);
   }
 
   @Override

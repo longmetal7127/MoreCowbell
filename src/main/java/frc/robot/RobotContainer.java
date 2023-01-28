@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.AprilTags;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.NavX;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -25,8 +26,12 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DriveTrain m_drive = new DriveTrain();
   public final Limelight m_limelight = new Limelight();
+  public final NavX navx = new NavX();
+
   public final Autonomous m_autocommand = new Autonomous(m_drive, m_limelight);
-  public final AprilTags april = new AprilTags();
+
+  //public final AprilTags april = new AprilTags();
+
   public static Joystick joystick = new Joystick(Constants.joystickPort);
   private final JoystickDrive joystickDrive = new JoystickDrive(m_drive);
 
