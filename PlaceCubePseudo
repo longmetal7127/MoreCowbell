@@ -5,6 +5,7 @@
 //lower cube node: 0' (ground)
 
 //note: each node is surrounded by 3" walls, which are accounted for in the heights above
+//need equation for arm precision; gearbox, sprocket ratios?
 
 //Check orientation with grid April tag
   //No: do not execute
