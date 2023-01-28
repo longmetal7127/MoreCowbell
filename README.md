@@ -18,4 +18,9 @@ Saturday Plans
 Map out course Group A
 Autonomous Group B
 
-
+plot out 3 options
+which side are we on
+accounting for other teams?
+servo code from last year
+add graphs to smartboard
+gryoscopic programming
