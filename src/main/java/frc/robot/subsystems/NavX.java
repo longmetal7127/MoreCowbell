@@ -63,18 +63,17 @@ public class NavX extends SubsystemBase{
         /* for advanced users.  Before using this data, please consider whether     */
         /* the processed data (see above) will suit your needs.                     */
         
-        //SmartDashboard.putNumber(   "RawGyro_X",            ahrs.getRawGyroX());
-        //SmartDashboard.putNumber(   "RawGyro_Y",            ahrs.getRawGyroY());
-        //SmartDashboard.putNumber(   "RawGyro_Z",            ahrs.getRawGyroZ());
-        //SmartDashboard.putNumber(   "RawAccel_X",           ahrs.getRawAccelX());
-        //SmartDashboard.putNumber(   "RawAccel_Y",           ahrs.getRawAccelY());
-        //SmartDashboard.putNumber(   "RawAccel_Z",           ahrs.getRawAccelZ());
-        //SmartDashboard.putNumber(   "RawMag_X",             ahrs.getRawMagX());
-        //SmartDashboard.putNumber(   "RawMag_Y",             ahrs.getRawMagY());
-        //SmartDashboard.putNumber(   "RawMag_Z",             ahrs.getRawMagZ());
-        //SmartDashboard.putNumber(   "IMU_Temp_C",           ahrs.getTempC());
-        //SmartDashboard.putNumber(   "IMU_Timestamp",        ahrs.getLastSensorTimestamp());
-        
+        // SmartDashboard.putNumber(   "RawGyro_Y",            ahrs.getRawGyroY());
+        // SmartDashboard.putNumber(   "RawGyro_X",            ahrs.getRawGyroX());
+        // SmartDashboard.putNumber(   "RawGyro_Z",            ahrs.getRawGyroZ());
+        // SmartDashboard.putNumber(   "RawAccel_X",           ahrs.getRawAccelX());
+        // SmartDashboard.putNumber(   "RawAccel_Y",           ahrs.getRawAccelY());
+        // SmartDashboard.putNumber(   "RawAccel_Z",           ahrs.getRawAccelZ());
+        // SmartDashboard.putNumber(   "RawMag_X",             ahrs.getRawMagX());
+        // SmartDashboard.putNumber(   "RawMag_Y",             ahrs.getRawMagY());
+        // SmartDashboard.putNumber(   "RawMag_Z",             ahrs.getRawMagZ());
+        SmartDashboard.putNumber(   "IMU_Temp_F",           ((ahrs.getTempC()*1.8) + 32));
+        SmartDashboard.putNumber(   "IMU_Timestamp",        ahrs.getLastSensorTimestamp());
         /* Omnimount Yaw Axis Information                                           */
         /* For more info, see http://navx-mxp.kauailabs.com/installation/omnimount  */
         //AHRS.BoardYawAxis yaw_axis = ahrs.getBoardYawAxis();

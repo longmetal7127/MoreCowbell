@@ -6,15 +6,19 @@ package frc.robot;
 
 import frc.robot.Constants;
 import frc.robot.commands.Autonomous;
+import frc.robot.commands.BFM;
 import frc.robot.commands.JoystickDrive;
 import frc.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.AprilTags;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.NavX;
+import frc.robot.subsystems.Pnuematics;;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -27,10 +31,9 @@ public class RobotContainer {
   public final DriveTrain m_drive = new DriveTrain();
   public final Limelight m_limelight = new Limelight();
   public final NavX navx = new NavX();
-
+  public final Pnuematics pnuematics = new Pnuematics();
   public final Autonomous m_autocommand = new Autonomous(m_drive, m_limelight);
 
-  //public final AprilTags april = new AprilTags();
 
   public static Joystick joystick = new Joystick(Constants.joystickPort);
   private final JoystickDrive joystickDrive = new JoystickDrive(m_drive);
@@ -59,6 +62,10 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
+    JoystickButton intakeButton = new JoystickButton(joystick, 1);
+    intakeButton.whileTrue(new BFM(pnuematics, kForward)); 
+    intakeButton.whileFalse(new BFM(pnuematics, kReverse));
+
   }
 
   /**
