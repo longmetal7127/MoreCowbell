@@ -6,10 +6,12 @@ package frc.robot;
 
 import frc.robot.Constants;
 import frc.robot.commands.Autonomous;
-import frc.robot.commands.BFM;
+import frc.robot.commands.BFMActuate;
+import frc.robot.commands.ClawActuate;
 import frc.robot.commands.JoystickDrive;
 import frc.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
@@ -34,12 +36,10 @@ public class RobotContainer {
   public final Pnuematics pnuematics = new Pnuematics();
   public final Autonomous m_autocommand = new Autonomous(m_drive, m_limelight);
 
-
   public static Joystick joystick = new Joystick(Constants.joystickPort);
-  private final JoystickDrive joystickDrive = new JoystickDrive(m_drive);
+  public static XboxController xbox = new XboxController(Constants.xboxPort);
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController = new CommandXboxController(Constants.kDriverControllerPort);
+  private final JoystickDrive joystickDrive = new JoystickDrive(m_drive);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -58,13 +58,19 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    JoystickButton intakeButton = new JoystickButton(joystick, 1);
-    intakeButton.whileTrue(new BFM(pnuematics, kForward)); 
-    intakeButton.whileFalse(new BFM(pnuematics, kReverse));
+
+    // Trigger button = claw
+
+    // Side button = BFM
+    JoystickButton sideButton = new JoystickButton(xbox, XboxController.Button.kB.value);
+    sideButton.whileTrue(new BFMActuate(pnuematics, kForward)); 
+    sideButton.whileFalse(new BFMActuate(pnuematics, kReverse));
+
+    JoystickButton triggerButton = new JoystickButton(xbox, XboxController.Button.kA.value); //Release Balls
+    triggerButton.whileTrue(new ClawActuate(pnuematics, kForward));
+    triggerButton.whileFalse(new ClawActuate(pnuematics, kReverse));
+
 
   }
 

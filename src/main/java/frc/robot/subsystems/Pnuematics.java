@@ -14,8 +14,8 @@ public class Pnuematics extends SubsystemBase {
     DoubleSolenoid items[] = {claw, bfm};
     public Pnuematics() {
 
-
     }
+    
     public void toggle(int id, Value value) {
         items[id].set(value);
     }

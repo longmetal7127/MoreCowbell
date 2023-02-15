@@ -13,25 +13,20 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final class CameraVision {
-    public final String cameraName = "camera";
-    public final int ViewportWidth = 640;
-    public final int ViewportHeight = 480;
-}
-
-  public static final int kDriverControllerPort = 0;
-  //Drive train
+  // Drive train
   public static int leftFront = 3; 
   public static int leftBack = 4;
   public static int rightFront = 1;
   public static int rightBack = 2;
 
-  //Driverstation ports 
-  public static int joystickPort = 0;//USB port on driver station computer
+  // Driverstation ports 
+  public static int joystickPort = 0; // USB port on driver station computer
   public static int xboxPort = 1;
 
-  // lmao
-
-
+  // Arm gear ratio
+  public static int ARM_BIG_SPROCKET = 60;
+  public static int ARM_SMALL_SPROCKET = 16;
+  public static int ARM_GEARBOX_RATIO = 100;
+  public static int ARM_GEAR_RATIO = 100 * (ARM_BIG_SPROCKET / ARM_SMALL_SPROCKET);
 }
 
