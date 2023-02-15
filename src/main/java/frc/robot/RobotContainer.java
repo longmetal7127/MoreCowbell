@@ -5,15 +5,20 @@
 package frc.robot;
 
 import frc.robot.Constants;
-import frc.robot.commands.Autos;
+import frc.robot.commands.Autonomous;
+import frc.robot.commands.BFM;
 import frc.robot.commands.JoystickDrive;
 import frc.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.AprilTags;
-import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.NavX;
+import frc.robot.subsystems.Pnuematics;;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -24,14 +29,17 @@ import frc.robot.subsystems.Vision;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DriveTrain m_drive = new DriveTrain();
-  public final AprilTags april = new AprilTags();
-  private final Vision vision = new Vision();
+  public final Limelight m_limelight = new Limelight();
+  public final NavX navx = new NavX();
+  public final Pnuematics pnuematics = new Pnuematics();
+  public final Autonomous m_autocommand = new Autonomous(m_drive, m_limelight);
+
+
   public static Joystick joystick = new Joystick(Constants.joystickPort);
   private final JoystickDrive joystickDrive = new JoystickDrive(m_drive);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(Constants.kDriverControllerPort);
+  private final CommandXboxController m_driverController = new CommandXboxController(Constants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -51,11 +59,13 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    
+    JoystickButton intakeButton = new JoystickButton(joystick, 1);
+    intakeButton.whileTrue(new BFM(pnuematics, kForward)); 
+    intakeButton.whileFalse(new BFM(pnuematics, kReverse));
+
   }
 
   /**
@@ -63,8 +73,8 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  /*public Command getAutonomousCommand() {
+  public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return;
-  }*/
+    return m_autocommand;
+  }
 }

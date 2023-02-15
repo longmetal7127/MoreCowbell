@@ -31,16 +31,7 @@ public final class Constants {
   public static int xboxPort = 1;
 
   // lmao
-  public static double targetHeight = 100; //inches
-  public static double limelightHeight = 5; //inches
-  public static double limelightOffset = 0; // inches from limelight to intake
-  public static double limelightAngle = 90;
 
-  public static double closeDistance = 60;
-  public static double middleDistance = 70;//76;//81.6;
-  public static double farDistance = 105;//96;//102;
-
-  public static double restingSpeed = 0.4;
 
 }
 
