@@ -9,6 +9,8 @@ import frc.robot.commands.Autonomous;
 import frc.robot.commands.BFMActuate;
 import frc.robot.commands.ClawActuate;
 import frc.robot.commands.JoystickDrive;
+import frc.robot.commands.RotateArm;
+import frc.robot.subsystems.ArmTrain;
 import frc.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -31,6 +33,8 @@ import frc.robot.subsystems.Pnuematics;;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DriveTrain m_drive = new DriveTrain();
+  public final ArmTrain m_arm = new ArmTrain();
+  
   public final Limelight m_limelight = new Limelight();
   public final NavX navx = new NavX();
   public final Pnuematics pnuematics = new Pnuematics();
@@ -40,11 +44,11 @@ public class RobotContainer {
   public static XboxController xbox = new XboxController(Constants.xboxPort);
 
   private final JoystickDrive joystickDrive = new JoystickDrive(m_drive);
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+  
     m_drive.setDefaultCommand(joystickDrive);
   }
 
@@ -58,20 +62,20 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-
-
-    // Trigger button = claw
-
-    // Side button = BFM
     JoystickButton sideButton = new JoystickButton(xbox, XboxController.Button.kB.value);
     sideButton.whileTrue(new BFMActuate(pnuematics, kForward)); 
     sideButton.whileFalse(new BFMActuate(pnuematics, kReverse));
 
-    JoystickButton triggerButton = new JoystickButton(xbox, XboxController.Button.kA.value); //Release Balls
+    JoystickButton triggerButton = new JoystickButton(xbox, XboxController.Button.kX.value);
     triggerButton.whileTrue(new ClawActuate(pnuematics, kForward));
     triggerButton.whileFalse(new ClawActuate(pnuematics, kReverse));
 
+    JoystickButton up = new JoystickButton(xbox, XboxController.Button.kY.value);
+    up.whileTrue(new RotateArm(m_arm, -20, xbox));
+    JoystickButton down = new JoystickButton(xbox, XboxController.Button.kA.value);
+    down.whileTrue(new RotateArm(m_arm,0, xbox));
 
+    
   }
 
   /**

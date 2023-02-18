@@ -19,6 +19,9 @@ public final class Constants {
   public static int rightFront = 1;
   public static int rightBack = 2;
 
+  // Arm motor controller
+  public static int armMotor = 5;
+
   // Driverstation ports 
   public static int joystickPort = 0; // USB port on driver station computer
   public static int xboxPort = 1;
