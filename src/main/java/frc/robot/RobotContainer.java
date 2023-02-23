@@ -75,7 +75,7 @@ public class RobotContainer {
     triggerButton.whileFalse(new ClawActuate(pnuematics, kReverse));
 
     JoystickButton up = new JoystickButton(xbox, XboxController.Button.kY.value);
-    up.whileTrue(new RotateArm(m_arm, -16, xbox));
+    up.whileTrue(new RotateArm(m_arm, -19, xbox));
     JoystickButton down = new JoystickButton(xbox, XboxController.Button.kA.value);
     down.whileTrue(new RotateArm(m_arm,0, xbox));
     JoystickButton brakesUp = new JoystickButton(xbox, XboxController.Button.kLeftBumper.value);
