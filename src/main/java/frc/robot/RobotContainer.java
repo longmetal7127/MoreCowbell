@@ -12,6 +12,8 @@ import frc.robot.commands.JoystickDrive;
 import frc.robot.commands.RotateArm;
 import frc.robot.subsystems.ArmTrain;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Vision;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -36,6 +38,8 @@ public class RobotContainer {
   public final ArmTrain m_arm = new ArmTrain();
   
   public final Limelight m_limelight = new Limelight();
+  public final Vision m_vision  = new Vision();
+
   public final NavX navx = new NavX();
   public final Pnuematics pnuematics = new Pnuematics();
   public final Autonomous m_autocommand = new Autonomous(m_drive, m_limelight);
