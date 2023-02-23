@@ -11,6 +11,7 @@ import frc.robot.commands.BrakeActuate;
 import frc.robot.commands.ClawActuate;
 import frc.robot.commands.JoystickDrive;
 import frc.robot.commands.RotateArm;
+import frc.robot.commands.ZeroArm;
 import frc.robot.subsystems.ArmTrain;
 import frc.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj.Joystick;
@@ -74,13 +75,15 @@ public class RobotContainer {
     triggerButton.whileFalse(new ClawActuate(pnuematics, kReverse));
 
     JoystickButton up = new JoystickButton(xbox, XboxController.Button.kY.value);
-    up.whileTrue(new RotateArm(m_arm, -20, xbox));
+    up.whileTrue(new RotateArm(m_arm, -16, xbox));
     JoystickButton down = new JoystickButton(xbox, XboxController.Button.kA.value);
     down.whileTrue(new RotateArm(m_arm,0, xbox));
     JoystickButton brakesUp = new JoystickButton(xbox, XboxController.Button.kLeftBumper.value);
     brakesUp.whileTrue(new BrakeActuate(pnuematics, kForward));
     JoystickButton brakesDown = new JoystickButton(xbox, XboxController.Button.kRightBumper.value);
     brakesDown.whileTrue(new BrakeActuate(pnuematics, kReverse));
+    JoystickButton zero = new JoystickButton(xbox, XboxController.Button.kLeftStick.value);
+    zero.whileTrue(new ZeroArm(m_arm));
 
 
     

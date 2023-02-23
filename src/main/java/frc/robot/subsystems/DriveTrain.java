@@ -67,7 +67,7 @@ public class DriveTrain extends SubsystemBase {
   public void drive(double y, double x, double z) {
     // Swapping x and y because of joystick
     // Chilling with z because sometimes you accidentally twist when trying to go forward/back/left/right
-    if(z > -0.3 && z < 0.3) {
+    if(z > -0.4 && z < 0.4) {
       z = 0;
     }
 
