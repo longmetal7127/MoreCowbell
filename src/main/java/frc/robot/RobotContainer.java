@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants;
 import frc.robot.commands.Autonomous;
 import frc.robot.commands.BFMActuate;
+import frc.robot.commands.BrakeActuate;
 import frc.robot.commands.ClawActuate;
 import frc.robot.commands.JoystickDrive;
 import frc.robot.commands.RotateArm;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -62,6 +64,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    //xbox.setRumble(GenericHID.RumbleType.kBothRumble, 1);
     JoystickButton sideButton = new JoystickButton(xbox, XboxController.Button.kB.value);
     sideButton.whileTrue(new BFMActuate(pnuematics, kForward)); 
     sideButton.whileFalse(new BFMActuate(pnuematics, kReverse));
@@ -74,6 +77,11 @@ public class RobotContainer {
     up.whileTrue(new RotateArm(m_arm, -20, xbox));
     JoystickButton down = new JoystickButton(xbox, XboxController.Button.kA.value);
     down.whileTrue(new RotateArm(m_arm,0, xbox));
+    JoystickButton brakesUp = new JoystickButton(xbox, XboxController.Button.kLeftBumper.value);
+    brakesUp.whileTrue(new BrakeActuate(pnuematics, kForward));
+    JoystickButton brakesDown = new JoystickButton(xbox, XboxController.Button.kRightBumper.value);
+    brakesDown.whileTrue(new BrakeActuate(pnuematics, kReverse));
+
 
     
   }

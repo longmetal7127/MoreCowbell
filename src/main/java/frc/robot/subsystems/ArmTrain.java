@@ -29,12 +29,12 @@ public class ArmTrain extends SubsystemBase {
 
     // PID coefficients
     kP = 0.05;
-    kI = 1e-4;
-    kD = 1;
+    kI = 0;
+    kD = 0;
     kIz = 0;
     kFF = 0;
-    kMaxOutput = 0.1;
-    kMinOutput = -0.1;
+    kMaxOutput = 0.4;
+    kMinOutput = -0.4;
 
     // set PID coefficients
     pidControl.setP(kP);
@@ -54,17 +54,17 @@ public class ArmTrain extends SubsystemBase {
   // Spark max pid controller
   // SparkMaxPIDController
   public void rotate(double angle) {
-    System.out.print(angle);
-    /*if(angle > 90) {
+    if(angle > 90) {
       angle = 90;
-    }*/
+    }
 
-    double encoderValue = angle * Constants.ARM_GEAR_RATIO;
-    System.out.print(encoderValue);
-    /*if(encoderValue > 0) {
+    double encoderValue = angle * Constants.ARM_GEAR_RATIO /50;
+    System.out.print("encode " + encoderValue + " actual " + encoder.getPosition());
+    if(encoderValue > 0) {
       encoderValue = 0;
-    }*/
+    }
     pidControl.setReference(encoderValue, CANSparkMax.ControlType.kPosition);
+    //armMotor.set(angle);
   }
 
   public void reset() {
