@@ -72,7 +72,7 @@ public class DriveTrain extends SubsystemBase {
     }
 
     //m_drive.driveCartesian(y, x, z);
-    m_drive.driveCartesian(slewX.calculate(y), slewY.calculate(x), slewZ.calculate(z));
+    m_drive.driveCartesian(slewX.calculate(y), slewY.calculate(x), slewZ.calculate(z/2));
   }
 
   @Override
