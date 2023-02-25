@@ -1,0 +1,31 @@
+// I was thinking we could use a number pad to prompt grid placement because the number pad is a 3x3 grid
+// (ex. Numpad 7 is upper left cone node, Numpad 2 is bottom middle hybrid node, Numpad 5 is middle cube node)
+
+// Top cone nodes are at 3' 10", Middle cone nodes are at 2' 10"
+
+// Oriented correctly with a grid April tag?
+  // No: Do not execute code
+  // Yes: Numpad key pressed?
+    // No:
+      // Wait for input
+    // Numpad 1, Numpad 4, or Numpad 7:
+      // Disable movement control
+      // Robot moves to the left so that the arm is oriented to place on the left
+      // Numpad 1, 4, or 7 pressed?
+        // Numpad 1: Arm moves to place on bottom level, release grip, maneuver arm back
+        // Numpad 4: Arm moves to place on middle level, release grip, maneuver arm back
+        // Numpad 7: Arm moves to place on top level, release grip, maneuver arm back
+    // Numpad 3, Numpad 6, or Numpad 9:
+      // Robot moves to the right so that the arm is oriented to place on the right
+      // Disable movement control
+      // Numpad 3, 6, or 9 pressed?
+        // Numpad 3: Arm moves to place on bottom level, release grip, maneuver arm back
+        // Numpad 6: Arm moves to place on middle level, release grip, maneuver arm back
+        // Numpad 9: Arm moves to place on top level, release grip, maneuver arm back
+    // Numpad 2, Numpad 5, or Numpad 8?
+      // Disable movement control
+      // Numpad 2, 5, or 8 pressed?
+        // Numpad 2: Execute cube placement for bottom level
+        // Numpad 5: Execute cube placement for bottom level
+        // Numpad 8: Execute cube placement for bottom level
+      

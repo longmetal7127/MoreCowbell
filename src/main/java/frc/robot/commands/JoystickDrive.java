@@ -32,7 +32,6 @@ public class JoystickDrive extends CommandBase {/*
 
   }  
 
-
   /*
     Called every time the scheduler runs while the command is scheduled.
     execute() will run over and over again until isFinished() returns true
@@ -42,10 +41,8 @@ public class JoystickDrive extends CommandBase {/*
     m_drive.drive(-RobotContainer.joystick.getY(), RobotContainer.joystick.getX(), RobotContainer.joystick.getZ()); 
   }
 
-
   @Override
   public void end(boolean interrupted) { // Called once the command ends or is interrupted.
-
 
   }
 

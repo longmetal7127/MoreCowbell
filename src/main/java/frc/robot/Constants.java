@@ -13,14 +13,23 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final int kDriverControllerPort = 0;
-  //Drive train
-  public static int leftMaster = 3; 
-  public static int leftFollower = 4;
-  public static int rightMaster = 1;
-  public static int rightFollower = 2;
+  // Drive train
+  public static int leftFront = 3; 
+  public static int leftBack = 4;
+  public static int rightFront = 1;
+  public static int rightBack = 2;
 
-  //Driverstation ports 
-  public static int joystickPort = 0;//USB port on driver station computer
+  // Arm motor controller
+  public static int armMotor = 5;
+
+  // Driverstation ports 
+  public static int joystickPort = 0; // USB port on driver station computer
   public static int xboxPort = 1;
+
+  // Arm gear ratio
+  public static int ARM_BIG_SPROCKET = 60;
+  public static int ARM_SMALL_SPROCKET = 16;
+  public static int ARM_GEARBOX_RATIO = 100;
+  public static int ARM_GEAR_RATIO = 100 * (ARM_BIG_SPROCKET / ARM_SMALL_SPROCKET);
 }
+

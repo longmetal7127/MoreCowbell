@@ -1,0 +1,25 @@
+//upper cube node height: 3' 10"
+  //depth: 3' 3 & 3/4"
+//middle cube node height: 1' 11 & 1/2"
+  //depth: 1' 10 & 3/4"
+//lower cube node: 0' (ground)
+
+//note: each node is surrounded by 3" walls, which are accounted for in the heights above
+//need equation for arm precision; gearbox, sprocket ratios?
+
+//Check orientation with grid April tag
+  //No: do not execute
+  //Yes: 
+    //parameter level: lower, middle, or upper?
+      //if lower
+        //disable movement control
+        //release claw, move arm back
+      //if middle
+        //disable movement control
+        //move arm above 1' 11 & 1/2", extend out 1' 10 & 3/4"
+        //release, move arm back
+      //if upper
+        //disable movement control
+        //move arm above 3'10", extend out 3' 3 & 3/4"
+        //release, move arm back
+
