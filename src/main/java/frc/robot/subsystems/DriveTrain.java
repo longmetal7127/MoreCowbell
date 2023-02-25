@@ -27,7 +27,7 @@ public class DriveTrain extends SubsystemBase {
 
   public SlewRateLimiter slewX = new SlewRateLimiter(0.75);
   public SlewRateLimiter slewY = new SlewRateLimiter(0.75);
-  public SlewRateLimiter slewZ = new SlewRateLimiter(0.75);
+  public SlewRateLimiter slewZ = new SlewRateLimiter(1.4);
 
   // Create a new DifferentialDrive object
   public MecanumDrive m_drive;

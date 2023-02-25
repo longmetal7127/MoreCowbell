@@ -9,8 +9,9 @@ import frc.robot.commands.Autonomous;
 import frc.robot.commands.BFMActuate;
 import frc.robot.commands.BrakeActuate;
 import frc.robot.commands.ClawActuate;
+import frc.robot.commands.FineArmMove;
 import frc.robot.commands.JoystickDrive;
-import frc.robot.commands.RotateArm;
+import frc.robot.commands.ArmMove;
 import frc.robot.commands.ZeroArm;
 import frc.robot.subsystems.ArmTrain;
 import frc.robot.subsystems.DriveTrain;
@@ -79,16 +80,20 @@ public class RobotContainer {
     triggerButton.whileFalse(new ClawActuate(pnuematics, kReverse));
 
     JoystickButton up = new JoystickButton(xbox, XboxController.Button.kY.value);
-    up.whileTrue(new RotateArm(m_arm, -19.5, xbox));
+    up.onTrue(new ArmMove(m_arm, true));
     JoystickButton down = new JoystickButton(xbox, XboxController.Button.kA.value);
-    down.whileTrue(new RotateArm(m_arm, 0, xbox));
-    JoystickButton middle = new JoystickButton(xbox, 10);
-    middle.whileTrue(new RotateArm(m_arm, -10, xbox));
+    down.onTrue(new ArmMove(m_arm, false));
+    JoystickButton fineUp = new JoystickButton(xbox, XboxController.Button.kStart.value);
+    fineUp.onTrue(new FineArmMove(m_arm, true));
+    JoystickButton fineDown = new JoystickButton(xbox, XboxController.Button.kBack.value);
+    fineDown.onTrue(new FineArmMove(m_arm, false));
 
     JoystickButton brakesUp = new JoystickButton(xbox, XboxController.Button.kLeftBumper.value);
     brakesUp.whileTrue(new BrakeActuate(pnuematics, kForward));
     JoystickButton brakesDown = new JoystickButton(xbox, XboxController.Button.kRightBumper.value);
     brakesDown.whileTrue(new BrakeActuate(pnuematics, kReverse));
+
+
     JoystickButton zero = new JoystickButton(joystick, XboxController.Button.kLeftStick.value);
     zero.whileTrue(new ZeroArm(m_arm));
 

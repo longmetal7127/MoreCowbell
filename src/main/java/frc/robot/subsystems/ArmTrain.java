@@ -14,9 +14,10 @@ import frc.robot.Constants;
 
 public class ArmTrain extends SubsystemBase {
   // Define the Spark Max motor controllers for the arm train
+  private int currentAdjustment = 0;
   private CANSparkMax armMotor = new CANSparkMax(Constants.armMotor, MotorType.kBrushless);
   private SparkMaxPIDController pidControl = null;
-  private int heights[] = {0, 28, 56, 84};
+  private double heights[] = { 0, -13,53, -37.9, -60.64, -90 };
   private int currentHeightIndice = 0;
   // Create an encoder for the controller
   private RelativeEncoder encoder = armMotor.getEncoder();
@@ -63,17 +64,48 @@ public class ArmTrain extends SubsystemBase {
       angle = 90;
     }
 
-    double encoderValue = angle * Constants.ARM_GEAR_RATIO / 225;
+    double encoderValue = angle * Constants.ARM_GEAR_RATIO / 304.5;
     if (encoderValue > 0) {
       encoderValue = 0;
     }
     pidControl.setReference(encoderValue, CANSparkMax.ControlType.kPosition);
     // armMotor.set(angle);
   }
-  public void move(Boolean up) {
-    if ()
+
+  public void moveUp() {
+    currentAdjustment= 0;
+        if (currentHeightIndice == heights.length - 1) {
+      currentHeightIndice = 0;
+    } else {
+      currentHeightIndice++;
+    }
+    rotate(heights[currentHeightIndice]);
   }
-  
+  public void fineMoveUp() {
+    currentAdjustment--;
+    rotate(heights[currentHeightIndice] + currentAdjustment);
+    System.out.println("\n\n\n\n\n" + (heights[currentHeightIndice] + currentAdjustment) + "\n\n\n\n\n");
+  }
+  public void fineMoveDown() {
+    currentAdjustment++;
+    rotate(heights[currentHeightIndice] + currentAdjustment);
+    System.out.println("\n\n\n\n\n" + (heights[currentHeightIndice] + currentAdjustment) + "\n\n\n\n\n");
+
+  }
+
+
+
+  public void moveDown() {
+    currentAdjustment= 0;
+    if (currentHeightIndice == 0) {
+      currentHeightIndice = heights.length - 1;
+    } else {
+      currentHeightIndice--;
+    }
+    rotate(heights[currentHeightIndice]);
+
+  }
+
   public void reset() {
     rotate(0);
   }
