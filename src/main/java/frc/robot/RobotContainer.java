@@ -79,14 +79,17 @@ public class RobotContainer {
     triggerButton.whileFalse(new ClawActuate(pnuematics, kReverse));
 
     JoystickButton up = new JoystickButton(xbox, XboxController.Button.kY.value);
-    up.whileTrue(new RotateArm(m_arm, -19, xbox));
+    up.whileTrue(new RotateArm(m_arm, -19.5, xbox));
     JoystickButton down = new JoystickButton(xbox, XboxController.Button.kA.value);
-    down.whileTrue(new RotateArm(m_arm,0, xbox));
+    down.whileTrue(new RotateArm(m_arm, 0, xbox));
+    JoystickButton middle = new JoystickButton(xbox, 10);
+    middle.whileTrue(new RotateArm(m_arm, -10, xbox));
+
     JoystickButton brakesUp = new JoystickButton(xbox, XboxController.Button.kLeftBumper.value);
     brakesUp.whileTrue(new BrakeActuate(pnuematics, kForward));
     JoystickButton brakesDown = new JoystickButton(xbox, XboxController.Button.kRightBumper.value);
     brakesDown.whileTrue(new BrakeActuate(pnuematics, kReverse));
-    JoystickButton zero = new JoystickButton(xbox, XboxController.Button.kLeftStick.value);
+    JoystickButton zero = new JoystickButton(joystick, XboxController.Button.kLeftStick.value);
     zero.whileTrue(new ZeroArm(m_arm));
 
 

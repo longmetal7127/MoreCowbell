@@ -16,7 +16,8 @@ public class ArmTrain extends SubsystemBase {
   // Define the Spark Max motor controllers for the arm train
   private CANSparkMax armMotor = new CANSparkMax(Constants.armMotor, MotorType.kBrushless);
   private SparkMaxPIDController pidControl = null;
-
+  private int heights[] = {0, 28, 56, 84};
+  private int currentHeightIndice = 0;
   // Create an encoder for the controller
   private RelativeEncoder encoder = armMotor.getEncoder();
 
@@ -54,7 +55,6 @@ public class ArmTrain extends SubsystemBase {
   // Spark max pid controller
   // SparkMaxPIDController
   public void zero() {
-
     encoder.setPosition(0);
   }
 
@@ -63,15 +63,17 @@ public class ArmTrain extends SubsystemBase {
       angle = 90;
     }
 
-    double encoderValue = angle * Constants.ARM_GEAR_RATIO / 50;
-    System.out.print("encode " + encoderValue + " actual " + encoder.getPosition());
+    double encoderValue = angle * Constants.ARM_GEAR_RATIO / 225;
     if (encoderValue > 0) {
       encoderValue = 0;
     }
     pidControl.setReference(encoderValue, CANSparkMax.ControlType.kPosition);
     // armMotor.set(angle);
   }
-
+  public void move(Boolean up) {
+    if ()
+  }
+  
   public void reset() {
     rotate(0);
   }
