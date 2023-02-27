@@ -10,7 +10,7 @@ import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
 import edu.wpi.first.wpilibj.Compressor;
 
-public class Pnuematics extends SubsystemBase {
+public class Pneumatics extends SubsystemBase {
     Compressor comp = new Compressor(6, PneumaticsModuleType.REVPH);
 
     DoubleSolenoid claw = new DoubleSolenoid(6, PneumaticsModuleType.REVPH, 3, 2);
@@ -18,7 +18,7 @@ public class Pnuematics extends SubsystemBase {
     DoubleSolenoid brake = new DoubleSolenoid(6, PneumaticsModuleType.REVPH, 4, 5);
     DoubleSolenoid items[] = { claw, bfm, brake };
 
-    public Pnuematics() {
+    public Pneumatics() {
         comp.enableDigital();
 
     }

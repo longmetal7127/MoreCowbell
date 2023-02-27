@@ -11,11 +11,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.Pnuematics;
+import frc.robot.subsystems.Pneumatics;
 import frc.robot.commands.ClawActuate;
 public final class Autonomous extends SequentialCommandGroup{
   /** Example static factory for an autonomous command. */
-  public Autonomous(DriveTrain m_drive, Limelight m_limelight, Pnuematics m_pneumatics) {
+  public Autonomous(DriveTrain m_drive, Limelight m_limelight, Pneumatics m_pneumatics) {
     boolean blue = DriverStation.getAlliance() == DriverStation.Alliance.Blue; //replace with not verbose
     boolean mid = false; //side or mid starting
     if (blue && !mid/*see above*/) {

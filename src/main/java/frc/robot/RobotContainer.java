@@ -11,7 +11,6 @@ import frc.robot.commands.BrakeActuate;
 import frc.robot.commands.ClawActuate;
 import frc.robot.commands.FineArmMove;
 import frc.robot.commands.JoystickDrive;
-import frc.robot.commands.Rumble;
 import frc.robot.commands.ArmMove;
 import frc.robot.commands.ZeroArm;
 import frc.robot.subsystems.ArmTrain;
@@ -29,7 +28,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.NavX;
-import frc.robot.subsystems.Pnuematics;;
+import frc.robot.subsystems.Pneumatics;;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -46,8 +45,8 @@ public class RobotContainer {
   public final Vision m_vision  = new Vision();
 
   public final NavX navx = new NavX();
-  public final Pnuematics pnuematics = new Pnuematics();
-  public final Autonomous m_autocommand = new Autonomous(m_drive, m_limelight);
+  public final Pneumatics m_pneumatics = new Pneumatics();
+  public final Autonomous m_autocommand = new Autonomous(m_drive, m_limelight, m_pneumatics);
 
   public static Joystick joystick = new Joystick(Constants.joystickPort);
   public static XboxController xbox = new XboxController(Constants.xboxPort);
@@ -73,12 +72,12 @@ public class RobotContainer {
   private void configureBindings() {
     //xbox.setRumble(GenericHID.RumbleType.kBothRumble, 1);
     JoystickButton sideButton = new JoystickButton(xbox, XboxController.Button.kB.value);
-    sideButton.whileTrue(new BFMActuate(pnuematics, kForward)); 
-    sideButton.whileFalse(new BFMActuate(pnuematics, kReverse));
+    sideButton.whileTrue(new BFMActuate(m_pneumatics, kForward)); 
+    sideButton.whileFalse(new BFMActuate(m_pneumatics, kReverse));
 
     JoystickButton triggerButton = new JoystickButton(xbox, XboxController.Button.kX.value);
-    triggerButton.whileTrue(new ClawActuate(pnuematics, kForward));
-    triggerButton.whileFalse(new ClawActuate(pnuematics, kReverse));
+    triggerButton.whileTrue(new ClawActuate(m_pneumatics, kForward));
+    triggerButton.whileFalse(new ClawActuate(m_pneumatics, kReverse));
 
     JoystickButton up = new JoystickButton(xbox, XboxController.Button.kY.value);
     up.onTrue(new ArmMove(m_arm, true));
@@ -90,9 +89,9 @@ public class RobotContainer {
     fineDown.onTrue(new FineArmMove(m_arm, false));
 
     JoystickButton brakesUp = new JoystickButton(xbox, XboxController.Button.kLeftBumper.value);
-    brakesUp.whileTrue(new BrakeActuate(pnuematics, kForward));
+    brakesUp.whileTrue(new BrakeActuate(m_pneumatics, kForward));
     JoystickButton brakesDown = new JoystickButton(xbox, XboxController.Button.kRightBumper.value);
-    brakesDown.whileTrue(new BrakeActuate(pnuematics, kReverse));
+    brakesDown.whileTrue(new BrakeActuate(m_pneumatics, kReverse));
 
 
     JoystickButton zero = new JoystickButton(joystick, XboxController.Button.kLeftStick.value);

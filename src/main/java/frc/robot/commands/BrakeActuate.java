@@ -2,13 +2,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Pnuematics;
+import frc.robot.subsystems.Pneumatics;
 
 public class BrakeActuate extends CommandBase {
-    Pnuematics p;
+    Pneumatics p;
     Value direction;
 
-    public BrakeActuate(Pnuematics m_pnuematics, Value dir) {
+    public BrakeActuate(Pneumatics m_pnuematics, Value dir) {
         direction = dir;
         p = m_pnuematics;
     }
