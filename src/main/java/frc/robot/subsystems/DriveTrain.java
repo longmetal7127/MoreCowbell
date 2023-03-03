@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -37,6 +38,7 @@ public class DriveTrain extends SubsystemBase {
   public RelativeEncoder m_rightEncoder = m_rightFront.getEncoder();
 
   public ADXRS450_Gyro gyro = new ADXRS450_Gyro();
+  double kP = 0.05;
 
   public DriveTrain() {
     // Restoring Factory Defaults for each motor controller
@@ -44,7 +46,6 @@ public class DriveTrain extends SubsystemBase {
     m_rightBack.restoreFactoryDefaults();
     m_leftFront.restoreFactoryDefaults();
     m_rightFront.restoreFactoryDefaults();
-
     m_rightFront.setInverted(true);
     m_rightBack.setInverted(true);
 
@@ -59,20 +60,23 @@ public class DriveTrain extends SubsystemBase {
 
     // Feed the DifferentialDrive the two motor controllers
     m_drive = new MecanumDrive(m_leftFront, m_leftBack, m_rightFront, m_rightBack);
-    m_drive.setMaxOutput(0.75);
+    //m_drive.setMaxOutput(0.75);
     m_drive.setDeadband(0.05);
   }
   
   // Takes in doubles for translation and rotation(both -1 to 1)
   public void drive(double y, double x, double z) {
     // Swapping x and y because of joystick
-    // Chilling with z because sometimes you accidentally twist when trying to go forward/back/left/right
-    if(z > -0.4 && z < 0.4) {
-      z = 0;
-    }
-
     //m_drive.driveCartesian(y, x, z);
-    m_drive.driveCartesian(slewX.calculate(y), slewY.calculate(x), slewZ.calculate(z/2));
+    m_drive.driveCartesian(slewX.calculate(y), slewY.calculate(x), slewZ.calculate(z));
+  }
+
+  public void resetGyro() {
+    gyro.reset();
+  }
+
+  public double getGyroAngle() {
+    return gyro.getAngle();
   }
 
   @Override

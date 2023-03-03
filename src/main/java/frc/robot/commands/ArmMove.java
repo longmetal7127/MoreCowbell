@@ -28,7 +28,7 @@ private Boolean isFinished = false;
 
     }
     public boolean isFinished() {
-return isFinished;
+        return isFinished;
     }
     
 }

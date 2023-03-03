@@ -20,11 +20,9 @@ public class Pneumatics extends SubsystemBase {
 
     public Pneumatics() {
         comp.enableDigital();
-
     }
 
     public void toggle(int id, Value value) {
         items[id].set(value);
     }
-
 }

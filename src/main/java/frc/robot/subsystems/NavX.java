@@ -12,7 +12,12 @@ public class NavX extends SubsystemBase{
         ahrs = new AHRS(SPI.Port.kMXP);
         ahrs.reset();
     }
-
+    public double getYaw() {
+        return ahrs.getYaw();
+    }
+    public void resetYaw() {
+        ahrs.zeroYaw();
+    }
     public void updateSmartDashboard() {
         boolean zero_yaw_pressed = false; //stick.getTrigger();
         if ( zero_yaw_pressed ) {

@@ -11,11 +11,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.commands.ClawActuate;
 public final class Autonomous extends SequentialCommandGroup{
   /** Example static factory for an autonomous command. */
-  public Autonomous(DriveTrain m_drive, Limelight m_limelight, Pneumatics m_pneumatics) {
+  public Autonomous(DriveTrain m_drive, Limelight m_limelight, Pneumatics m_pneumatics, NavX navx) {
     boolean blue = DriverStation.getAlliance() == DriverStation.Alliance.Blue; //replace with not verbose
     boolean mid = false; //side or mid starting
     if (blue && !mid/*see above*/) {
@@ -23,7 +24,7 @@ public final class Autonomous extends SequentialCommandGroup{
         new GoTo(m_drive, m_limelight, 0, -4, 0.15, 0.05),
         new ClawActuate(m_pneumatics, Value.kForward),
         new GoTo(m_drive, m_limelight, 0, 0, 0.15, 0.05),
-        new Turn(m_drive, 0.1),  
+        new Turn(m_drive, navx, 180),  
         new ClawActuate(m_pneumatics, Value.kReverse)
         /* Idea is: 
          * Move up to grid

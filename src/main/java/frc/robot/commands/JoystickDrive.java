@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveTrain;
@@ -15,10 +16,11 @@ public class JoystickDrive extends CommandBase {/*
                                                 */
 
   private final DriveTrain m_drive; //Create a new DriveTrain object to hold the given DriveTrain subsystem
+  private  Joystick m_joystick; //Create a new DriveTrain object to hold the given DriveTrain subsystem
 
-  public JoystickDrive(DriveTrain drive) {
+  public JoystickDrive(DriveTrain drive, Joystick joystick) {
     m_drive = drive; //Set the given DiveTrain equal to the Drivetrain in the command
-
+    m_joystick = joystick;
     addRequirements(drive);//tell the computer that this command is using the drivetrain subsystem
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -37,8 +39,13 @@ public class JoystickDrive extends CommandBase {/*
     execute() will run over and over again until isFinished() returns true
   */
   @Override
-  public void execute() {   
-    m_drive.drive(-RobotContainer.joystick.getY(), RobotContainer.joystick.getX(), RobotContainer.joystick.getZ()); 
+  public void execute() { 
+    double multiplier = (((m_joystick.getThrottle()*-1) + 1) / 2)+0.11;
+    double z = RobotContainer.joystick.getZ();
+    if (Math.abs(z) < 0.4) {
+      z = 0.0;
+    }
+    m_drive.drive(-RobotContainer.joystick.getY() * multiplier, RobotContainer.joystick.getX() * multiplier, z * multiplier); 
   }
 
   @Override

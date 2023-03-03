@@ -14,7 +14,6 @@ public class ZeroArm extends CommandBase {
     }
 
     public void execute() {
-        arm.zero();
-        
+        arm.zero(); 
     }
 }
