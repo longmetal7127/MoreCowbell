@@ -8,27 +8,25 @@ import frc.robot.subsystems.ArmTrain;
 public class ArmMove extends CommandBase {
     private ArmTrain arm;
     private Boolean up;
-private Boolean isFinished = false;
+    private Boolean isFinished = false;
+    
     public ArmMove(ArmTrain a, Boolean ups) {
         addRequirements(a);
         this.arm = a;
         this.up = ups;
-        System.out.println("this should run once");
-
     }
-   // @Override
+
     public void execute() {
-        System.out.println("ArmMove.java");
         if (this.up) {
             arm.moveUp();
         } else {
             arm.moveDown();
         }
-        isFinished = true;
 
+        isFinished = true;
     }
+
     public boolean isFinished() {
         return isFinished;
     }
-    
 }

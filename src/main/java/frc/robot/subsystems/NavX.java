@@ -5,13 +5,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class NavX extends SubsystemBase{
+public class NavX extends SubsystemBase {
     private AHRS ahrs;
 
     public NavX() {
         ahrs = new AHRS(SPI.Port.kMXP);
         ahrs.reset();
     }
+
     public double getYaw() {
         return ahrs.getYaw();
     }

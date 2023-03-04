@@ -82,7 +82,6 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // xbox.setRumble(GenericHID.RumbleType.kBothRumble, 1);
     JoystickButton sideButton = new JoystickButton(xbox, XboxController.Button.kB.value);
     sideButton.whileTrue(new BFMActuate(m_pneumatics, kForward));
     sideButton.whileFalse(new BFMActuate(m_pneumatics, kReverse));
@@ -93,6 +92,7 @@ public class RobotContainer {
 
     JoystickButton up = new JoystickButton(xbox, XboxController.Button.kY.value);
     up.onTrue(new ArmMove(m_arm, true));
+
     JoystickButton down = new JoystickButton(xbox, XboxController.Button.kA.value);
     down.onTrue(new ArmMove(m_arm, false));
     
@@ -103,18 +103,22 @@ public class RobotContainer {
 
     JoystickButton brakesUp = new JoystickButton(xbox, XboxController.Button.kLeftBumper.value);
     brakesUp.whileTrue(new BrakeActuate(m_pneumatics, kForward));
+    
     JoystickButton brakesDown = new JoystickButton(xbox, XboxController.Button.kRightBumper.value);
     brakesDown.whileTrue(new BrakeActuate(m_pneumatics, kReverse));
 
     JoystickButton zero = new JoystickButton(xbox, XboxController.Button.kLeftStick.value);
     zero.whileTrue(new ZeroArm(m_arm));
     
-    JoystickButton oneeighty = new JoystickButton(joystick, 5);
-    oneeighty.onTrue(new Turn(m_drive, navx,180));
+    // One Eighty
+    JoystickButton oneEightyLeft = new JoystickButton(joystick, 5);
+    oneEightyLeft.onTrue(new Turn(m_drive, navx,-180));
+    JoystickButton oneEightyRight = new JoystickButton(joystick, 6);
+    oneEightyRight.onTrue(new Turn(m_drive, navx,180));
 
+    // Nudge
     JoystickButton turnLeft = new JoystickButton(joystick, 3);
     turnLeft.onTrue(new Turn(m_drive,navx, -5));
-
     JoystickButton turnRight = new JoystickButton(joystick, 4);
     turnRight.onTrue(new Turn(m_drive,navx, 5));
   }

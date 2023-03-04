@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveTrain;
 
-
 public class JoystickDrive extends CommandBase {/*
                                                   The JoystickDrive class extends the CommandBase class
                                                   which allows it to inherit the CommandBase methods
@@ -19,11 +18,11 @@ public class JoystickDrive extends CommandBase {/*
   private  Joystick m_joystick; //Create a new DriveTrain object to hold the given DriveTrain subsystem
 
   public JoystickDrive(DriveTrain drive, Joystick joystick) {
-    m_drive = drive; //Set the given DiveTrain equal to the Drivetrain in the command
-    m_joystick = joystick;
-    addRequirements(drive);//tell the computer that this command is using the drivetrain subsystem
-
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(drive); // Tell the computer that this command is using the drivetrain subsystem
+
+    m_drive = drive; // Set the given DiveTrain equal to the Drivetrain in the command
+    m_joystick = joystick;
   }
 
   @Override /*
@@ -40,16 +39,18 @@ public class JoystickDrive extends CommandBase {/*
   */
   @Override
   public void execute() { 
-    double multiplier = (((m_joystick.getThrottle()*-1) + 1) / 2)+0.11;
+    double multiplier = (((m_joystick.getThrottle() * -1) + 1) / 2) + 0.11;
     double z = RobotContainer.joystick.getZ();
+
     if (Math.abs(z) < 0.4) {
       z = 0.0;
     }
+    
     m_drive.drive(-RobotContainer.joystick.getY() * multiplier, RobotContainer.joystick.getX() * multiplier, z * multiplier); 
   }
 
   @Override
-  public void end(boolean interrupted) { // Called once the command ends or is interrupted.
+  public void end(boolean interrupted) {
 
   }
 

@@ -4,17 +4,11 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.DoubleToIntFunction;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,17 +19,18 @@ public class ArmTrain extends SubsystemBase {
   private int currentAdjustment = 0;
   private CANSparkMax armMotor = new CANSparkMax(Constants.armMotor, MotorType.kBrushless);
   private SparkMaxPIDController pidControl = null;
-  private double heights[] = { 0, -13, -37.9, -53, -60.64, -88.0 };
+  private double heights[] = {0, -15, -35, -95, -112};
   /* 
    * Ideally, heights is an array such that:
    * Index 0 is within the robot in order to hold the arm steady
    * Index 1 is the height to pick up cones and cubes; ideally this will work for both
    * Index 2 is the height to carry game pieces at; this should still be low. This is also going to work for the bottom gate drop
-   * Index 3 is the middle level of the gates (should be at the height of the middle cone pole; this should work for the cubes too)
+   * Index 3 is the middle level of the gates (should be at the height of the middle cone pole; this should work for the cubes too) AND the Player Station
    * Index 4 is the the top level of the gates (should be at the height of the top cone pole; this should work for the cubes too)
-   * Index 5 is the Player Station
+   * Note: In a pinch, Index 3 will also work for the top cube. It will NOT work for the top cone. 
    */
   private int currentHeightIndice = 0;
+
   // Create an encoder for the controller
   private RelativeEncoder encoder = armMotor.getEncoder();
 
@@ -51,6 +46,7 @@ public class ArmTrain extends SubsystemBase {
     pidControl = armMotor.getPIDController();
 
     // PID coefficients
+    //If you touch these values, be VERY CAREFUL. We tried making kI 0.005 and it almost broke the arm.
     kP = 0.05;
     kI = 0;
     kD = 0.05;
@@ -66,9 +62,7 @@ public class ArmTrain extends SubsystemBase {
     pidControl.setIZone(kIz);
     pidControl.setFF(kFF);
     pidControl.setOutputRange(kMinOutput, kMaxOutput);
-    armMotor.setIdleMode(IdleMode.kBrake);
-    pidControl.setSmartMotionMaxAccel(20,0);
-
+    pidControl.setSmartMotionMaxAccel(5,0);
   }
 
   public void calibrate() {
@@ -90,6 +84,7 @@ public class ArmTrain extends SubsystemBase {
     if (encoderValue > 0) {
       encoderValue = 0;
     }
+
     pidControl.setReference(encoderValue, CANSparkMax.ControlType.kPosition);
     // armMotor.set(angle);
   }
@@ -103,12 +98,14 @@ public class ArmTrain extends SubsystemBase {
     }
 
     rotate(heights[currentHeightIndice]);
+
     System.out.println(encoder.getPosition() +"\n\n\n\n\n\n");
   }
 
   public void fineMoveUp() {
     currentAdjustment-= 5;
     rotate(heights[currentHeightIndice] + currentAdjustment);
+
     System.out.println("\n\n\n\n\n" + (heights[currentHeightIndice] + currentAdjustment) + "\n\n\n\n\n");
     System.out.println(encoder.getPosition() +"\n\n\n\n\n\n");
   }
@@ -116,18 +113,22 @@ public class ArmTrain extends SubsystemBase {
   public void fineMoveDown() {
     currentAdjustment+= 5;
     rotate(heights[currentHeightIndice] + currentAdjustment);
+
     System.out.println("\n\n\n\n\n" + (heights[currentHeightIndice] + currentAdjustment) + "\n\n\n\n\n");
     System.out.println(encoder.getPosition() +"\n\n\n\n\n\n");
   }
 
   public void moveDown() {
     currentAdjustment = 0;
+
     if (currentHeightIndice == 0) {
       currentHeightIndice = heights.length - 1;
     } else {
       currentHeightIndice--;
     }
+
     rotate(heights[currentHeightIndice]);
+    
     System.out.println(encoder.getPosition() +"\n\n\n\n\n\n");
   }
 

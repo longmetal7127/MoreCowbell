@@ -4,69 +4,80 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.NavX;
 
 public class Turn extends CommandBase {
-  /** Creates a new GyroTurn. */
+  // This constant matters!
+  // Based on the momentum it could overshoot a bunch etc bla, make sure this makes a good Z turn range for the robot
+  private final double kP = 0.012;
+
   private DriveTrain drive;
-private NavX nav;
-  double kP = 0.1;
-  double targetAngle;
+  private NavX navx;
+  private double targetAngle;
 
-  boolean finished = false;
-
-  public Turn(DriveTrain m_drive, NavX navx, double a) {
+  public Turn(DriveTrain drive, NavX navx, double targetAngle) {
     // Use addRequirements() here to declare subsystem dependencies.
-    drive = m_drive;
-    nav = navx;
-    targetAngle = a;
-    addRequirements(m_drive);
+    addRequirements(drive);
+
+    this.drive = drive;
+    this.navx = navx;
+    this.targetAngle = targetAngle;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    nav.resetYaw();
+    navx.resetYaw();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double error, turnPower;
+    double yaw, error, turnZ;
 
-    while (Math.abs(targetAngle - nav.getYaw()) > 2) {
-      error = targetAngle - nav.getYaw();
-      turnPower = kP * error;
+    yaw = navx.getYaw();
 
-      // Clamps it if too high
-      if (Math.abs(turnPower) >= 0.25) {
-        if (turnPower > 0) {
-          turnPower = 0.25;
-        } else {
-          turnPower = -0.25;
-        }
+    error = targetAngle - yaw;
+    turnZ = kP * error;
+
+    /*System.out.println("Turn execute");
+    System.out.println(yaw);
+    System.out.println(turnZ);*/
+
+    // Clamps it if too high
+    if (Math.abs(turnZ) >= 0.25) {
+      if (turnZ > 0) {
+        turnZ = 0.25;
+      } else {
+        turnZ = -0.25;
       }
-
-      System.out.println(turnPower);
-
-      drive.drive(0, 0, turnPower);
     }
 
-    finished = true;
+    // Clamp if too low
+    if (Math.abs(turnZ) <= 0.05) {
+      if (turnZ > 0) {
+        turnZ = 0.05;
+      } else {
+        turnZ = -0.05;
+      }
+    }
+
+    //System.out.println(turnZ);
+
+    drive.drive(0, 0, turnZ);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    nav.resetYaw();
+    drive.drive(0, 0, 0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return finished;
+    return Math.abs(targetAngle - navx.getYaw()) <= 0.5;
   }
 }
