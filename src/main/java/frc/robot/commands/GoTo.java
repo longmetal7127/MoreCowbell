@@ -18,8 +18,7 @@ public class GoTo extends CommandBase {
     private double velocity;
     private double tolerance; // position tolerance
 
-    public GoTo(DriveTrain m_drive, Limelight m_limelight, double targetX, double targetY, double velocity,
-            double tolerance) {
+    public GoTo(DriveTrain m_drive, Limelight m_limelight, double targetX, double targetY, double velocity, double tolerance) {
         this.drive = m_drive;
         this.lime = m_limelight;
 
@@ -30,7 +29,6 @@ public class GoTo extends CommandBase {
     }
 
     public void execute() {
-
         Pose3d botpose = lime.getSmoothRobotPose();
         Rotation3d rotation = botpose.getRotation();
         double x = botpose.getX();
@@ -80,7 +78,8 @@ public class GoTo extends CommandBase {
     }
 
     public boolean isFinished() {
-        return (Math.abs(this.dY) > tolerance && Math.abs(this.dX) > tolerance);
+        boolean finished = (Math.abs(this.dY) > tolerance && Math.abs(this.dX) > tolerance);
+        //System.out.println("goto isfinished " + finished);
+        return finished;
     }
-
 }

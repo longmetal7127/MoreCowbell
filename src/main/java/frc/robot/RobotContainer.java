@@ -6,20 +6,19 @@ package frc.robot;
 
 import frc.robot.Constants;
 import frc.robot.commands.Autonomous;
-import frc.robot.commands.BFMActuate;
 import frc.robot.commands.BrakeActuate;
 import frc.robot.commands.ClawActuate;
 import frc.robot.commands.FineArmMove;
 import frc.robot.commands.JoystickDrive;
 import frc.robot.commands.Turn;
-import frc.robot.commands.ArmMove;
+import frc.robot.commands.ArmCycle;
 import frc.robot.commands.ZeroArm;
 import frc.robot.subsystems.ArmTrain;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Vision;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
@@ -46,11 +45,10 @@ public class RobotContainer {
   public final ArmTrain m_arm = new ArmTrain();
 
   public final Limelight m_limelight = new Limelight();
-  public final Vision m_vision = new Vision();
 
   public final NavX navx = new NavX();
   public final Pneumatics m_pneumatics = new Pneumatics();
-  public final Autonomous m_autocommand = new Autonomous(m_drive, m_limelight, m_pneumatics,navx);
+  public final Autonomous m_autocommand = new Autonomous(m_drive, m_limelight, m_pneumatics,navx, m_arm);
 
   public static Joystick joystick = new Joystick(Constants.joystickPort);
   public static XboxController xbox = new XboxController(Constants.xboxPort);
@@ -82,31 +80,35 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    JoystickButton sideButton = new JoystickButton(xbox, XboxController.Button.kB.value);
-    sideButton.whileTrue(new BFMActuate(m_pneumatics, kForward));
-    sideButton.whileFalse(new BFMActuate(m_pneumatics, kReverse));
-
+    // Actuate claw
+    xbox.setRumble(RumbleType.kBothRumble, 1);
     JoystickButton triggerButton = new JoystickButton(xbox, XboxController.Button.kX.value);
     triggerButton.whileTrue(new ClawActuate(m_pneumatics, kForward));
     triggerButton.whileFalse(new ClawActuate(m_pneumatics, kReverse));
 
+    // Up arm
     JoystickButton up = new JoystickButton(xbox, XboxController.Button.kY.value);
-    up.onTrue(new ArmMove(m_arm, true));
+    up.onTrue(new ArmCycle(m_arm, true));
 
+    // Down arm
     JoystickButton down = new JoystickButton(xbox, XboxController.Button.kA.value);
-    down.onTrue(new ArmMove(m_arm, false));
+    down.onTrue(new ArmCycle(m_arm, false));
     
+    // Small adjustments on arm
     JoystickButton fineUp = new JoystickButton(xbox, XboxController.Button.kStart.value);
     fineUp.onTrue(new FineArmMove(m_arm, true));
     JoystickButton fineDown = new JoystickButton(xbox, XboxController.Button.kBack.value);
     fineDown.onTrue(new FineArmMove(m_arm, false));
 
+    // Brakes
     JoystickButton brakesUp = new JoystickButton(xbox, XboxController.Button.kLeftBumper.value);
     brakesUp.whileTrue(new BrakeActuate(m_pneumatics, kForward));
     
+    // Brakes
     JoystickButton brakesDown = new JoystickButton(xbox, XboxController.Button.kRightBumper.value);
     brakesDown.whileTrue(new BrakeActuate(m_pneumatics, kReverse));
 
+    // Zero arm
     JoystickButton zero = new JoystickButton(xbox, XboxController.Button.kLeftStick.value);
     zero.whileTrue(new ZeroArm(m_arm));
     

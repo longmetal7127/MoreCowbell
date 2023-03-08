@@ -5,15 +5,24 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import frc.robot.subsystems.Pneumatics;
 
 public class ClawActuate extends CommandBase {
-    Pneumatics p;
-    Value direction;
+    private Pneumatics pnuematics;
+    private Value direction;
+    private boolean isFinished;
 
-    public ClawActuate(Pneumatics m_pnuematics, Value val) {
-        p = m_pnuematics;
-        direction = val;
+    public ClawActuate(Pneumatics pnuematics, Value direction) {
+        this.pnuematics = pnuematics;
+        this.direction = direction;
+
+        isFinished = false;
     }
 
     public void execute() {
-        p.toggle(0, direction);
+        pnuematics.set(0, direction);
+
+        isFinished = true;
+    }
+
+    public boolean isFinished() {
+        return isFinished;
     }
 }

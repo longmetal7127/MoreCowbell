@@ -5,7 +5,6 @@ import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 
 public class LimitSwitch extends CommandBase {
     public CANSparkMax m_motor = new CANSparkMax(5, MotorType.kBrushless);

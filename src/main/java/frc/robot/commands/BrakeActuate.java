@@ -14,6 +14,6 @@ public class BrakeActuate extends CommandBase {
     }
 
     public void execute() {
-            p.toggle(2, direction);
+        p.set(2, direction);
     }
 }

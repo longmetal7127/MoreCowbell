@@ -8,6 +8,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxLimitSwitch.Type;
+
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -18,8 +20,8 @@ public class ArmTrain extends SubsystemBase {
   // Define the Spark Max motor controllers for the arm train
   private int currentAdjustment = 0;
   private CANSparkMax armMotor = new CANSparkMax(Constants.armMotor, MotorType.kBrushless);
-  private SparkMaxPIDController pidControl = null;
-  private double heights[] = {0, -15, -35, -95, -112};
+  private SparkMaxPIDController pidControl;
+  private double heights[] = { 0, -0.2, -20.2, -85.2, -102.2 };
   /* 
    * Ideally, heights is an array such that:
    * Index 0 is within the robot in order to hold the arm steady
@@ -81,12 +83,12 @@ public class ArmTrain extends SubsystemBase {
     }
 
     double encoderValue = angle * Constants.ARM_GEAR_RATIO / 304.5;
-    if (encoderValue > 0) {
+    // Should not need anymore due to limit swtich
+    /*if (encoderValue > 0) {
       encoderValue = 0;
-    }
+    }*/
 
     pidControl.setReference(encoderValue, CANSparkMax.ControlType.kPosition);
-    // armMotor.set(angle);
   }
 
   public void moveUp() {
@@ -138,6 +140,12 @@ public class ArmTrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // SmartDashboard.putNumber("Gyro", getGyroAngle());
+    if (armMotor.getForwardLimitSwitch(Type.kNormallyOpen).isPressed()) {
+      /*double pos = encoder.getPosition();
+      double angle = pos / (Constants.ARM_GEAR_RATIO / 304.5);*/
+      //System.out.println("limit switch pressed");
+      encoder.setPosition(0);
+    }
   }
 }
+ 
