@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -12,15 +13,26 @@ public class NavX extends SubsystemBase {
         ahrs = new AHRS(SPI.Port.kMXP);
         ahrs.reset();
     }
+
     public static double getPitch() {
         return ahrs.getPitch();
     }
+    public static double getAngle() {
+        return ahrs.getPitch();
+    }
+
     public double getYaw() {
         return ahrs.getYaw();
     }
+
     public void resetYaw() {
         ahrs.zeroYaw();
     }
+
+    public Rotation2d getRotation2d() {
+        return ahrs.getRotation2d();
+    }
+    
     public void updateSmartDashboard() {
         boolean zero_yaw_pressed = false; //stick.getTrigger();
         if ( zero_yaw_pressed ) {
