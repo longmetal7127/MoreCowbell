@@ -149,7 +149,7 @@ public class RobotContainer {
     DriverStation.Alliance alliance = DriverStation.getAlliance();
     //int location = DriverStation.getLocation();
 
-    System.out.println("Team: " + alliance + " " + location);
+    //System.out.println("Team: " + alliance + " " + location);
     
     switch(location) {
       case "Auto 1":
@@ -158,7 +158,7 @@ public class RobotContainer {
       case "Auto 2":
       pathGroup = PathPlanner.loadPathGroup("auto2", new PathConstraints(0, 0));
       break;
-      case "Auto 3":
+      case "Auto 3": //currently identical to auto 1
       pathGroup = PathPlanner.loadPathGroup("auto1", pc);
       break;
     }
