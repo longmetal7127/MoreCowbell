@@ -34,12 +34,26 @@ public final class Constants {
   public static int ARM_SMALL_SPROCKET = 16;
   public static int ARM_GEARBOX_RATIO = 100;
   public static int ARM_GEAR_RATIO = 100 * (ARM_BIG_SPROCKET / ARM_SMALL_SPROCKET);
-  public static MecanumDriveKinematics KINEMATICS = new MecanumDriveKinematics(
-    new Translation2d(0.28, 0.33),
-    new Translation2d(0.28, -0.33),
-    new Translation2d(-0.24, 0.33),
-    new Translation2d(-0.24, -0.33)
+
+  // Conversion Factors
+  public static final double kWheelDiameterMeters = 0.1524; // 6 inch
+  public static final double kEncoderGearRatio = 12.75; // gear ratio
+  public static final double kEncoderDistancePerPulseMeters = (kWheelDiameterMeters * Math.PI) / kEncoderGearRatio;
+  public static final double kEncoderVelocityFactor = kEncoderDistancePerPulseMeters / 60.0;
+
+  // Kinematics
+  // Make sure this is centric to the drive train, not the robot
+  public static MecanumDriveKinematics MECANUM_KINEMATICS = new MecanumDriveKinematics(
+    new Translation2d(0.269, 0.323),
+    new Translation2d(0.269, -0.323),
+    new Translation2d(-0.269, 0.323),
+    new Translation2d(-0.269, -0.323)
   );
 
-}
+  // Path
+  public static double PATH_MAX_VELOCITY = 1.5;
+  public static double PATH_MAX_ACCELERATION = 0.4;
 
+  // Arm heights for cycling and auto mode
+  public static final double ARM_HEIGHTS[] = { 0, -0.2, -20.2, -85.2, -130 };
+}

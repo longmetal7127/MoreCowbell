@@ -6,7 +6,6 @@ import frc.robot.subsystems.ArmTrain;
 public class ArmToPosition extends CommandBase {
     private ArmTrain arm;
     private double position;
-    private Boolean isFinished = false;
     
     public ArmToPosition(ArmTrain arm, double position) {
         addRequirements(arm);
@@ -16,11 +15,9 @@ public class ArmToPosition extends CommandBase {
 
     public void execute() {
         arm.rotate(position);
-        
-        isFinished = true;
     }
 
     public boolean isFinished() {
-        return isFinished;
+        return arm.checkAngle(position);
     }
 }

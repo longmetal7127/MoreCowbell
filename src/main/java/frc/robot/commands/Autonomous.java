@@ -17,7 +17,7 @@ import frc.robot.subsystems.Pneumatics;
 import frc.robot.commands.ClawActuate;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
-public final class Autonomous extends SequentialCommandGroup{
+public final class Autonomous extends SequentialCommandGroup {
   /** Example static factory for an autonomous command. */
   enum Position {
     FAR,
@@ -31,9 +31,9 @@ public final class Autonomous extends SequentialCommandGroup{
 
     // NEED april tag mode to get XYZ
     Position position;
-    if (m_limelight.getSmoothRobotPose().getY() < 0.27) {
+    if (m_limelight.getRobotPose().getY() < 0.27) {
       position = Position.FAR;
-    } else if (m_limelight.getSmoothRobotPose().getY() < 2.05) {
+    } else if (m_limelight.getRobotPose().getY() < 2.05) {
       position = Position.MID;
     } else {
       position = Position.CLOSE;

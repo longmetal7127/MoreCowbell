@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxLimitSwitch.Type;
 
@@ -21,7 +22,7 @@ public class ArmTrain extends SubsystemBase {
   private int currentAdjustment = 0;
   private CANSparkMax armMotor = new CANSparkMax(Constants.armMotor, MotorType.kBrushless);
   private SparkMaxPIDController pidControl;
-  private double heights[] = { 0, -0.2, -20.2, -85.2, -102.2 };
+  
   /* 
    * Ideally, heights is an array such that:
    * Index 0 is within the robot in order to hold the arm steady
@@ -88,50 +89,55 @@ public class ArmTrain extends SubsystemBase {
       encoderValue = 0;
     }*/
 
-    pidControl.setReference(encoderValue, CANSparkMax.ControlType.kPosition);
+    pidControl.setReference(encoderValue, ControlType.kPosition);
+  }
+
+  public boolean checkAngle(double angle) {
+    if (angle > 90) {
+      angle = 90;
+    }
+
+    double encoderValue = angle * Constants.ARM_GEAR_RATIO / 304.5;
+    double encoderPosition = encoder.getPosition();
+
+    System.out.println(encoderPosition);
+
+    double tolerance = 3;
+
+    return encoderPosition > (encoderValue - tolerance) && encoderPosition < (encoderValue + tolerance);
   }
 
   public void moveUp() {
     currentAdjustment = 0;
-    if (currentHeightIndice == heights.length - 1) {
+    if (currentHeightIndice == Constants.ARM_HEIGHTS.length - 1) {
       currentHeightIndice = 0;
     } else {
       currentHeightIndice++;
     }
 
-    rotate(heights[currentHeightIndice]);
-
-    System.out.println(encoder.getPosition() +"\n\n\n\n\n\n");
+    rotate(Constants.ARM_HEIGHTS[currentHeightIndice]);
   }
 
   public void fineMoveUp() {
     currentAdjustment-= 5;
-    rotate(heights[currentHeightIndice] + currentAdjustment);
-
-    System.out.println("\n\n\n\n\n" + (heights[currentHeightIndice] + currentAdjustment) + "\n\n\n\n\n");
-    System.out.println(encoder.getPosition() +"\n\n\n\n\n\n");
+    rotate(Constants.ARM_HEIGHTS[currentHeightIndice] + currentAdjustment);
   }
 
   public void fineMoveDown() {
-    currentAdjustment+= 5;
-    rotate(heights[currentHeightIndice] + currentAdjustment);
-
-    System.out.println("\n\n\n\n\n" + (heights[currentHeightIndice] + currentAdjustment) + "\n\n\n\n\n");
-    System.out.println(encoder.getPosition() +"\n\n\n\n\n\n");
+    currentAdjustment += 5;
+    rotate(Constants.ARM_HEIGHTS[currentHeightIndice] + currentAdjustment);
   }
 
   public void moveDown() {
     currentAdjustment = 0;
 
     if (currentHeightIndice == 0) {
-      currentHeightIndice = heights.length - 1;
+      currentHeightIndice = Constants.ARM_HEIGHTS.length - 1;
     } else {
       currentHeightIndice--;
     }
 
-    rotate(heights[currentHeightIndice]);
-    
-    System.out.println(encoder.getPosition() +"\n\n\n\n\n\n");
+    rotate(Constants.ARM_HEIGHTS[currentHeightIndice]);
   }
 
   public void reset() {

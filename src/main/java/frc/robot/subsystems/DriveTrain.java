@@ -4,22 +4,23 @@
 
 package frc.robot.subsystems;
 
+import java.util.List;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
+
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
-import edu.wpi.first.wpilibj.drive.MecanumDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.SPI;
 
 import frc.robot.Constants;
 
@@ -27,26 +28,30 @@ public class DriveTrain extends SubsystemBase {
 
   // Define the four Spark Max motor controllers for the drivetrain
   // There are two motor controllers for each side, one follower, and one master
-  public CANSparkMax m_leftFront = new CANSparkMax(Constants.leftFront, MotorType.kBrushless);
-  public CANSparkMax m_leftBack = new CANSparkMax(Constants.leftBack, MotorType.kBrushless);
-  public CANSparkMax m_rightFront = new CANSparkMax(Constants.rightFront, MotorType.kBrushless);
-  public CANSparkMax m_rightBack = new CANSparkMax(Constants.rightBack, MotorType.kBrushless);
+  private CANSparkMax m_leftFront = new CANSparkMax(Constants.leftFront, MotorType.kBrushless);
+  private CANSparkMax m_leftBack = new CANSparkMax(Constants.leftBack, MotorType.kBrushless);
+  private CANSparkMax m_rightFront = new CANSparkMax(Constants.rightFront, MotorType.kBrushless);
+  private CANSparkMax m_rightBack = new CANSparkMax(Constants.rightBack, MotorType.kBrushless);
 
-  public SlewRateLimiter slewX = new SlewRateLimiter(0.75);
-  public SlewRateLimiter slewY = new SlewRateLimiter(0.75);
-  public SlewRateLimiter slewZ = new SlewRateLimiter(1.4);
+  private SlewRateLimiter slewX = new SlewRateLimiter(0.75);
+  private SlewRateLimiter slewY = new SlewRateLimiter(0.75);
+  private SlewRateLimiter slewZ = new SlewRateLimiter(1.4);
 
   // Create a new DifferentialDrive object
-  public MecanumDrive m_drive;
-  public MecanumDriveKinematics m_kinematics;
+  private MecanumDrive m_drive;
 
   // Create an encoder for the master controller of each side
-  public RelativeEncoder m_leftFrontEncoder = m_leftFront.getEncoder();
-  public RelativeEncoder m_rightFrontEncoder = m_rightFront.getEncoder();
-  public RelativeEncoder m_leftBackEncoder = m_leftBack.getEncoder();
-  public RelativeEncoder m_rightBackEncoder = m_rightBack.getEncoder();
-  public ADXRS450_Gyro gyro = new ADXRS450_Gyro();
-  double kP = 0.05;
+  private RelativeEncoder m_leftFrontEncoder = m_leftFront.getEncoder();
+  private RelativeEncoder m_rightFrontEncoder = m_rightFront.getEncoder();
+  private RelativeEncoder m_leftBackEncoder = m_leftBack.getEncoder();
+  private RelativeEncoder m_rightBackEncoder = m_rightBack.getEncoder();
+
+  private SparkMaxPIDController m_leftFrontPID;
+  private SparkMaxPIDController m_leftBackPID;
+  private SparkMaxPIDController m_rightFrontPID;
+  private SparkMaxPIDController m_rightBackPID;
+
+  private SimpleMotorFeedforward mFF = new SimpleMotorFeedforward(0.1, 2.8, 1.5);
 
   public DriveTrain() {
     // Restoring Factory Defaults for each motor controller
@@ -54,56 +59,110 @@ public class DriveTrain extends SubsystemBase {
     m_rightBack.restoreFactoryDefaults();
     m_leftFront.restoreFactoryDefaults();
     m_rightFront.restoreFactoryDefaults();
+    
+    // Invert right side
     m_rightFront.setInverted(true);
     m_rightBack.setInverted(true);
+    
+    // Set zero position
+    resetEncoders();
 
-    gyro.calibrate();
+    // Set position conversion factors
+    m_leftFrontEncoder.setPositionConversionFactor(Constants.kEncoderDistancePerPulseMeters);
+    m_rightFrontEncoder.setPositionConversionFactor(Constants.kEncoderDistancePerPulseMeters);
+    m_leftBackEncoder.setPositionConversionFactor(Constants.kEncoderDistancePerPulseMeters);
+    m_rightBackEncoder.setPositionConversionFactor(Constants.kEncoderDistancePerPulseMeters);
 
-    /*
-     * Since each side of the drive train has two motors geared togther,
-     * we tell one of the motor controllers on each size to follow, or copy,
-     * everything
-     * the other on the same side motor controller does.
-     */
+    // Set velocity conversion factors
+    m_leftFrontEncoder.setVelocityConversionFactor(Constants.kEncoderVelocityFactor);
+    m_rightFrontEncoder.setVelocityConversionFactor(Constants.kEncoderVelocityFactor);
+    m_leftBackEncoder.setVelocityConversionFactor(Constants.kEncoderVelocityFactor);
+    m_rightBackEncoder.setVelocityConversionFactor(Constants.kEncoderVelocityFactor);
+
+    // Grab PID refernces and set them up
+    m_leftFrontPID = m_leftFront.getPIDController();
+    m_leftBackPID = m_leftBack.getPIDController();
+    m_rightFrontPID = m_rightFront.getPIDController();
+    m_rightBackPID = m_rightBack.getPIDController();
+
+    m_leftFrontPID.setP(0);
+    m_leftFrontPID.setI(0);
+    m_leftFrontPID.setD(0);
+    m_leftFrontPID.setOutputRange(-1, 1);
+
+    m_leftBackPID.setP(0);
+    m_leftBackPID.setI(0);
+    m_leftBackPID.setD(0);
+    m_leftBackPID.setOutputRange(-1, 1);
+
+    m_rightFrontPID.setP(0);
+    m_rightFrontPID.setI(0);
+    m_rightFrontPID.setD(0);
+    m_rightFrontPID.setOutputRange(-1, 1);
+
+    m_rightBackPID.setP(0);
+    m_rightBackPID.setI(0);
+    m_rightBackPID.setD(0);
+    m_rightBackPID.setOutputRange(-1, 1);
 
     // Feed the DifferentialDrive the two motor controllers
     m_drive = new MecanumDrive(m_leftFront, m_leftBack, m_rightFront, m_rightBack);
-    
-    // Locations of the wheels relative to the robot center
-
-    // Creating kinematics object
-    
+    m_drive.setSafetyEnabled(false);
     //m_drive.setMaxOutput(0.75);
     m_drive.setDeadband(0.05);
   }
 
-  public MecanumDriveWheelPositions getWheelPositions() {
-    return new MecanumDriveWheelPositions(m_leftFrontEncoder.getPosition(), m_rightFrontEncoder.getPosition(), m_leftBackEncoder.getPosition(), m_rightBackEncoder.getPosition());
-
+  public void resetEncoders() {
+    m_leftFrontEncoder.setPosition(0);
+    m_rightFrontEncoder.setPosition(0);
+    m_leftBackEncoder.setPosition(0);
+    m_rightBackEncoder.setPosition(0);
   }
 
-  public void resetPose(Pose2d pose) {
-
+  public MecanumDriveWheelPositions getWheelPositions() {
+    return new MecanumDriveWheelPositions(
+      m_leftFrontEncoder.getPosition(),
+      m_rightFrontEncoder.getPosition(),
+      m_leftBackEncoder.getPosition(),
+      m_rightBackEncoder.getPosition()
+    );
   }
 
   public void setOutputSpeeds(ChassisSpeeds speeds) {
-    MecanumDriveWheelSpeeds wheels = Constants.KINEMATICS.toWheelSpeeds(speeds);
-    System.out.println(wheels.frontLeftMetersPerSecond);
-    System.out.println(wheels.frontRightMetersPerSecond);
-    System.out.println(wheels.rearLeftMetersPerSecond);
-    System.out.println(wheels.rearRightMetersPerSecond);
+    MecanumDriveWheelSpeeds wheels = Constants.MECANUM_KINEMATICS.toWheelSpeeds(speeds);
+    wheels.desaturate(Constants.PATH_MAX_VELOCITY);
 
-    m_leftFront.set(wheels.frontLeftMetersPerSecond / 60);
-    m_rightFront.set(wheels.frontRightMetersPerSecond / 60);
-    m_leftBack.set(wheels.rearLeftMetersPerSecond / 60);
-    m_rightBack.set(wheels.rearRightMetersPerSecond / 60);
-    // Example chassis speeds: 1 meter per second forward, 3 meters
-    // per second to the left, and rotation at 1.5 radians per second
-    // counterclockwise.
-   // ChassisSpeeds speeds = new ChassisSpeeds(1.0, 3.0, 1.5);
+    m_leftFrontPID.setReference(
+      wheels.frontLeftMetersPerSecond,
+      ControlType.kVelocity,
+      0,
+      mFF.calculate(wheels.frontLeftMetersPerSecond),
+      ArbFFUnits.kVoltage
+    );
 
-    // Convert to wheel speeds
-    //return speeds;
+    m_leftBackPID.setReference(
+      wheels.rearLeftMetersPerSecond,
+      ControlType.kVelocity,
+      0,
+      mFF.calculate(wheels.rearLeftMetersPerSecond),
+      ArbFFUnits.kVoltage
+    );
+
+    m_rightFrontPID.setReference(
+      wheels.frontRightMetersPerSecond,
+      ControlType.kVelocity,
+      0,
+      mFF.calculate(wheels.frontRightMetersPerSecond),
+      ArbFFUnits.kVoltage
+    );
+
+    m_rightBackPID.setReference(
+      wheels.rearRightMetersPerSecond,
+      ControlType.kVelocity,
+      0,
+      mFF.calculate(wheels.rearRightMetersPerSecond),
+      ArbFFUnits.kVoltage
+    );
   }
 
   // Takes in doubles for translation and rotation(both -1 to 1)
@@ -113,16 +172,7 @@ public class DriveTrain extends SubsystemBase {
     m_drive.driveCartesian(slewX.calculate(y), slewY.calculate(x), slewZ.calculate(z));
   }
 
-  public void resetGyro() {
-    gyro.reset();
-  }
-
-  public double getGyroAngle() {
-    return gyro.getAngle();
-  }
-
   @Override
   public void periodic() {
-    // SmartDashboard.putNumber("Gyro", getGyroAngle());
   }
 }

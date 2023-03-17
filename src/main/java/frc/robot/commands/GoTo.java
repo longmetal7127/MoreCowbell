@@ -29,7 +29,7 @@ public class GoTo extends CommandBase {
     }
 
     public void execute() {
-        Pose3d botpose = lime.getSmoothRobotPose();
+        Pose3d botpose = lime.getRobotPose();
         Rotation3d rotation = botpose.getRotation();
         double x = botpose.getX();
         double y = botpose.getY();
