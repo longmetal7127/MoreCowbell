@@ -156,11 +156,15 @@ public class RobotContainer {
       pathGroup = PathPlanner.loadPathGroup("auto1", pc);
       break;
       case "Auto 2":
-      pathGroup = PathPlanner.loadPathGroup("auto2", new PathConstraints(0, 0));
+      pathGroup = PathPlanner.loadPathGroup("auto2", pc);
       break;
       case "Auto 3": //currently identical to auto 1
       pathGroup = PathPlanner.loadPathGroup("auto1", pc);
       break;
+      case "Do Nothing":
+      pathGroup = PathPlanner.loadPathGroup("doNothing", new PathConstraints(0, 0));
+      break;
+
     }
 
     return autoBuilder.fullAuto(pathGroup);

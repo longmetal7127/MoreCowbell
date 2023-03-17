@@ -27,6 +27,8 @@ public class Robot extends TimedRobot {
   private static final String kAuto1 = "Auto 1";
   private static final String kAuto2 = "Auto 2";
   private static final String kAuto3 = "Auto 3";
+  private static final String kDoNothing = "Do Nothing";
+
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
@@ -44,6 +46,7 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Auto 1", kAuto1);
     m_chooser.addOption("Auto 2", kAuto2);
     m_chooser.addOption("Auto 3", kAuto3);
+    m_chooser.addOption("Do Nothing", kDoNothing);
 
     SmartDashboard.putData("Auto Selector", m_chooser);
 
