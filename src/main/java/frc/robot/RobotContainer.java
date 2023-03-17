@@ -23,6 +23,8 @@ import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.Pneumatics;
@@ -140,23 +142,23 @@ public class RobotContainer {
     globalEventMap.put("brakesOff", new BrakeActuate(m_pneumatics, kReverse));
   }
 
-  public Command getAutonomousCommand() {
+  public Command getAutonomousCommand(String location) {
     List<PathPlannerTrajectory> pathGroup = null;
     PathConstraints pc = new PathConstraints(Constants.PATH_MAX_VELOCITY, Constants.PATH_MAX_ACCELERATION);
 
     DriverStation.Alliance alliance = DriverStation.getAlliance();
-    int location = DriverStation.getLocation();
+    //int location = DriverStation.getLocation();
 
     System.out.println("Team: " + alliance + " " + location);
     
     switch(location) {
-      case 1:
+      case "Auto 1":
       pathGroup = PathPlanner.loadPathGroup("auto1", pc);
       break;
-      case 2:
-      pathGroup = PathPlanner.loadPathGroup("auto2", pc);
+      case "Auto 2":
+      pathGroup = PathPlanner.loadPathGroup("auto2", new PathConstraints(0, 0));
       break;
-      case 3:
+      case "Auto 3":
       pathGroup = PathPlanner.loadPathGroup("auto3", pc);
       break;
     }
