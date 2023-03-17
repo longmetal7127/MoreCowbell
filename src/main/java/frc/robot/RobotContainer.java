@@ -159,7 +159,7 @@ public class RobotContainer {
       pathGroup = PathPlanner.loadPathGroup("auto2", new PathConstraints(0, 0));
       break;
       case "Auto 3":
-      pathGroup = PathPlanner.loadPathGroup("auto3", pc);
+      pathGroup = PathPlanner.loadPathGroup("auto1", pc);
       break;
     }
 
