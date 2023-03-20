@@ -51,8 +51,8 @@ public final class Constants {
   );
 
   // Path
-  public static double PATH_MAX_VELOCITY = 1.5;
-  public static double PATH_MAX_ACCELERATION = 0.4;
+  public static double PATH_MAX_VELOCITY = 3;
+  public static double PATH_MAX_ACCELERATION = 2;
 
   // Arm heights for cycling and auto mode
   public static final double ARM_HEIGHTS[] = { 0, -0.2, -20.2, -85.2, -130 };
