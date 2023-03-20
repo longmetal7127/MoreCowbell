@@ -4,32 +4,27 @@
 
 package frc.robot;
 
-import frc.robot.Constants;
 import frc.robot.commands.*;
 import frc.robot.subsystems.ArmTrain;
 import frc.robot.subsystems.DriveTrain;
-
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import com.pathplanner.lib.*;
 import com.pathplanner.lib.auto.MecanumAutoBuilder;
 import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.server.PathPlannerServer;
 
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.Pneumatics;
@@ -54,56 +49,39 @@ public class RobotContainer {
   public final Vision m_vision = new Vision();
 
   public final Pneumatics m_pneumatics = new Pneumatics();
-  public final Autonomous m_autocommand = new Autonomous(m_drive, m_limelight, m_pneumatics,navx, m_arm);
+  //public final Autonomous m_autocommand = new Autonomous(m_drive, m_limelight, m_pneumatics,navx, m_arm);
 
   public static Joystick joystick = new Joystick(Constants.joystickPort);
   public static XboxController xbox = new XboxController(Constants.xboxPort);
 
-  private final JoystickDrive joystickDrive = new JoystickDrive(m_drive, joystick);
-  private List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("FullAuto", new PathConstraints(4, 3));
+  private final JoystickDrive joystickDrive = new JoystickDrive(m_drive);
 
-  // This is just an example event map. It would be better to have a constant, global event map
-  // in your code that will be used by all path following commands.
-  HashMap<String, Command> eventMap = new HashMap<>();
+  private HashMap<String, Command> globalEventMap = new HashMap<>();
 
   // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
   private MecanumAutoBuilder autoBuilder = new MecanumAutoBuilder(
       m_limelight::getCurrentPose, // Pose2d supplier
       m_limelight::setPose, // Pose2d consumer, used to reset odometry at the beginning of auto
-      new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
-      new PIDConstants(0.5, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
+      new PIDConstants(0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+      new PIDConstants(0, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
       m_drive::setOutputSpeeds, // Output wheel speeds
-      eventMap, // The event map with commands
+      globalEventMap, // The event map with commands
       true, // Use alliance color
-      m_drive // The drive subsystem. Used to properly set the requirements of path following commands
+      m_drive, m_limelight // The drive subsystem. Used to properly set the requirements of path following commands
   );
   
-  Command fullAuto = autoBuilder.fullAuto(pathGroup);
-  
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
   public RobotContainer() {
+   // PathPlannerServer.startServer(5811);
     // Configure the trigger bindings
     configureBindings();
 
+    // Configure the auto event map
+    configureEventMap();
+
+    // Default drive command is joystick
     m_drive.setDefaultCommand(joystickDrive);
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be
-   * created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
-   * an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
-   * {@link
-   * CommandXboxController
-   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
   private void configureBindings() {
     // Actuate claw
     xbox.setRumble(RumbleType.kBothRumble, 1);
@@ -150,14 +128,45 @@ public class RobotContainer {
     turnRight.onTrue(new Turn(m_drive,navx, 5));
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
+  private void configureEventMap() {
+    globalEventMap.put("arm0", new ArmToPosition(m_arm, Constants.ARM_HEIGHTS[0]));
+    globalEventMap.put("arm1", new ArmToPosition(m_arm, Constants.ARM_HEIGHTS[1]));
+    globalEventMap.put("arm2", new ArmToPosition(m_arm, Constants.ARM_HEIGHTS[2]));
+    globalEventMap.put("arm3", new ArmToPosition(m_arm, Constants.ARM_HEIGHTS[3]));
+    globalEventMap.put("arm4", new ArmToPosition(m_arm, Constants.ARM_HEIGHTS[4]));
 
+    globalEventMap.put("openClaw", new ClawActuate(m_pneumatics, kForward));
+    globalEventMap.put("closeClaw", new ClawActuate(m_pneumatics, kReverse));
 
-    return fullAuto;
+    globalEventMap.put("brakesOn", new BrakeActuate(m_pneumatics, kForward));
+    globalEventMap.put("brakesOff", new BrakeActuate(m_pneumatics, kReverse));
+  }
+
+  public Command getAutonomousCommand(String location) {
+    List<PathPlannerTrajectory> pathGroup = null;
+    PathConstraints pc = new PathConstraints(Constants.PATH_MAX_VELOCITY, Constants.PATH_MAX_ACCELERATION);
+
+    DriverStation.Alliance alliance = DriverStation.getAlliance();
+    //int location = DriverStation.getLocation();
+
+    //System.out.println("Team: " + alliance + " " + location);
+    
+    switch(location) {
+      case "Auto 1":
+      pathGroup = PathPlanner.loadPathGroup("auto1", pc);
+      break;
+      case "Auto 2":
+      pathGroup = PathPlanner.loadPathGroup("auto2", pc);
+      break;
+      case "Auto 3": //currently identical to auto 1
+      pathGroup = PathPlanner.loadPathGroup("auto1", pc);
+      break;
+      case "Do Nothing":
+      pathGroup = PathPlanner.loadPathGroup("doNothing", new PathConstraints(0, 0));
+      break;
+
+    }
+
+    return autoBuilder.fullAuto(pathGroup);
   }
 }

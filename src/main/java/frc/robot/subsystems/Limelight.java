@@ -4,83 +4,77 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.kinematics.MecanumDriveMotorVoltages;
+import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
+import edu.wpi.first.math.numbers.*;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.*;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
-import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 
 public class Limelight extends SubsystemBase {
-  private NetworkTable m_table;
-  // private DoubleArraySubscriber posesub;
-  private static MecanumDrivePoseEstimator poseEstimator;
-  private final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5));
-  private final Matrix<N1, N1> localMeasurementStdDevs = VecBuilder.fill(Units.degreesToRadians(0.1));
-  private final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.02, 0.02, Units.degreesToRadians(5));
-  private NavX navX;
+  private NetworkTable table;
+
+  private NavX navx;
   private DriveTrain drive;
 
-  public Limelight(NavX navx, DriveTrain driveTrain) {
-    m_table = NetworkTableInstance.getDefault().getTable("limelight");
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("<variablename>").getDouble(0);
-    this.navX = navx;
-    this.drive = driveTrain;
-    /*
-     * MecanumDriveKinematics kinematics,
-     * Rotation2d gyroAngle,
-     * MecanumDriveWheelPositions wheelPositions,
-     * Pose2d initialPoseMeters,
-     * Matrix<N3, N1> stateStdDevs,
-     * Matrix<N3, N1> visionMeasurementStdDevs) {
-     */
-    poseEstimator = new MecanumDrivePoseEstimator(
-        Constants.KINEMATICS,
-        navx.getRotation2d(),
-        driveTrain.getWheelPositions(),
-        new Pose2d(new Translation2d(0, 0), new Rotation2d(0.0)),
-        stateStdDevs,
-        visionMeasurementStdDevs);
+  private static MecanumDrivePoseEstimator poseEstimator;
+  private final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(1));
+  private final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.02, 0.02, Units.degreesToRadians(1));
+  
+  private static MecanumDriveOdometry odometry;
 
+  public Limelight(NavX navx, DriveTrain drive) {
+    this.navx = navx;
+    this.drive = drive;
+
+    this.table = NetworkTableInstance.getDefault().getTable("limelight");
+
+    /*poseEstimator = new MecanumDrivePoseEstimator(
+        Constants.MECANUM_KINEMATICS,
+        navx.getRotation2d(),
+        drive.getWheelPositions(),
+        new Pose2d(),
+        stateStdDevs,
+        visionMeasurementStdDevs
+    );*/
+
+    odometry = new MecanumDriveOdometry(
+      Constants.MECANUM_KINEMATICS,
+      navx.getRotation2d(),
+      drive.getWheelPositions()
+    );
   }
 
   public Pose3d getRobotPose() {
-    NetworkTableEntry posesub = m_table.getEntry("botpose");
+    NetworkTableEntry posesub = null;
+    if(DriverStation.getAlliance() == Alliance.Blue) {
+      posesub = table.getEntry("botpose_wpiblue");
+    } else {
+      posesub = table.getEntry("botpose_wpired");
+    }
 
-    double[] result = posesub.getDoubleArray(new double[0]);
+    //NetworkTableEntry posesub = table.getEntry("botpose");
 
-    Translation3d tran3d = new Translation3d(result[0], result[1], result[2]);
-    posesub.close();
-    Rotation3d r3d = new Rotation3d(result[3], result[4], result[5]);
-    return new Pose3d(tran3d, r3d);
-  }
-
-  public Pose2d getRobotPose2d() {
-    NetworkTableEntry posesub = m_table.getEntry("botpose_wpired");
     double[] result = posesub.getDoubleArray(new double[6]);
     posesub.close();
 
     Translation3d tran3d = new Translation3d(result[0], result[1], result[2]);
     Rotation3d r3d = new Rotation3d(result[3], result[4], result[5]);
 
-    return new Pose3d(tran3d, r3d).toPose2d();
+    return new Pose3d(tran3d, r3d);
+  }
+
+  public Pose2d getRobotPose2d() {
+    return getRobotPose().toPose2d();
   }
 
   public double getKey(String key) {
@@ -91,35 +85,40 @@ public class Limelight extends SubsystemBase {
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipelineNumber);
   }
 
-  private LinearFilter mfX = LinearFilter.movingAverage(3);
-  private LinearFilter mfY = LinearFilter.movingAverage(3);
-  private LinearFilter mfZ = LinearFilter.movingAverage(3);
-
-  public Pose3d getSmoothRobotPose() {
-    NetworkTableEntry posesub = m_table.getEntry("botpose_wpired");
-
-    double[] result = posesub.getDoubleArray(new double[0]);
-
-    Translation3d tran3d = new Translation3d(
-        mfX.calculate(result[0]),
-        mfY.calculate(result[1]),
-        mfZ.calculate(result[2]));
-    Rotation3d r3d = new Rotation3d(result[3], result[4], result[5]);
-
-    return new Pose3d(tran3d, r3d);
-  }
-
   @Override
   public void periodic() {
-    poseEstimator.addVisionMeasurement(getRobotPose2d(), Timer.getFPGATimestamp());
-    poseEstimator.updateWithTime(Timer.getFPGATimestamp(), navX.getRotation2d(), drive.getWheelPositions());
+    Pose2d pose = getRobotPose2d();
+    System.out.println("periodic - X: " + pose.getX() + " Y: " + pose.getY());
+    System.out.println();
+
+    if(pose.getX() != 0 && pose.getY() != 0) {
+      //poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp());
+    }
+
+    //poseEstimator.updateWithTime(Timer.getFPGATimestamp(), navx.getRotation2d(), drive.getWheelPositions());
+    odometry.update(navx.getRotation2d(), drive.getWheelPositions());
   }
 
   public Pose2d getCurrentPose() {
-    return poseEstimator.getEstimatedPosition();
+    //Pose2d pose = poseEstimator.getEstimatedPosition();
+    Pose2d pose = odometry.getPoseMeters();
+
+    Rotation2d rot = pose.getRotation();
+    System.out.println("getCurrentPose - X: " + pose.getX() + " Y: " + pose.getY());
+    System.out.println("getCurrentPose - rotation: " + rot.getDegrees());
+    System.out.println("getCurrentPose - real rotation: " + navx.getRotation2d().getDegrees());
+    System.out.println();
+ 
+    return pose;
   }
 
   public void setPose(Pose2d pose) {
-    poseEstimator.resetPosition(navX.getRotation2d(), drive.getWheelPositions(), pose);
+    System.out.println("setPose - X: " + pose.getX() + " Y: " + pose.getY());
+    System.out.println("setPose - rotation: " + pose.getRotation().getDegrees());
+    System.out.println("setPose - real rotation: " + navx.getRotation2d().getDegrees());
+    System.out.println();
+
+    //poseEstimator.resetPosition(navx.getRotation2d(), drive.getWheelPositions(), pose);
+    odometry.resetPosition(navx.getRotation2d(), drive.getWheelPositions(), pose);
   }
 }

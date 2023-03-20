@@ -17,8 +17,10 @@ public class Pneumatics extends SubsystemBase {
 
     public Pneumatics() {
         comp.enableDigital();
+        claw.set(Value.kReverse);
+        brake.set(Value.kForward);
     }
-
+    
     public void set(int id, Value value) {
         items[id].set(value);
     }

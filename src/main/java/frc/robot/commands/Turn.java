@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.NavX;
 
@@ -19,7 +20,7 @@ public class Turn extends CommandBase {
 
   public Turn(DriveTrain drive, NavX navx, double targetAngle) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(drive);
+    addRequirements(drive, navx);
 
     this.drive = drive;
     this.navx = navx;
@@ -66,7 +67,9 @@ public class Turn extends CommandBase {
 
     //System.out.println(turnZ);
 
-    drive.drive(0, 0, turnZ);
+    double multiplier = (((RobotContainer.joystick.getThrottle() * -1) + 1) / 2);
+    drive.drive(-RobotContainer.joystick.getY() * multiplier, RobotContainer.joystick.getX() * multiplier, turnZ * multiplier);
+    //drive.drive(0, 0, turnZ);
   }
 
   // Called once the command ends or is interrupted.
