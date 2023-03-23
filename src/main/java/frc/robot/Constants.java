@@ -25,6 +25,9 @@ public final class Constants {
   // Arm motor controller
   public static int armMotor = 5;
 
+  public static int gripperLeftId = 8; 
+  public static int gripperRightId = 7;
+
   // Driverstation ports 
   public static int joystickPort = 0; // USB port on driver station computer
   public static int xboxPort = 1;
@@ -55,5 +58,5 @@ public final class Constants {
   public static double PATH_MAX_ACCELERATION = 2;
 
   // Arm heights for cycling and auto mode
-  public static final double ARM_HEIGHTS[] = { 0, -0.2, -20.2, -85.2, -130 };
+  public static final double ARM_HEIGHTS[] = { 0, -0.2, -20.2, -85.2, -100 };
 }

@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("Auto 3", kAuto3);
     m_chooser.addOption("Do Nothing", kDoNothing);
 
-    SmartDashboard.putData("Auto Selector", m_chooser);
+    SmartDashboard.putData("Auto choices", m_chooser);
 
   }
 
@@ -93,7 +93,7 @@ public class Robot extends TimedRobot {
     m_autoSelected = m_chooser.getSelected();
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand(m_autoSelected);
-
+System.out.print(m_autoSelected);
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();

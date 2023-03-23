@@ -28,7 +28,9 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.Pneumatics;
-import frc.robot.subsystems.Vision;;
+import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.GripperTrain;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -43,6 +45,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DriveTrain m_drive = new DriveTrain();
   public final ArmTrain m_arm = new ArmTrain();
+  public final GripperTrain m_gripper = new GripperTrain();
+
   public final NavX navx = new NavX();
 
   public final Limelight m_limelight = new Limelight(navx, m_drive);
@@ -126,6 +130,12 @@ public class RobotContainer {
     turnLeft.onTrue(new Turn(m_drive,navx, -5));
     JoystickButton turnRight = new JoystickButton(joystick, 4);
     turnRight.onTrue(new Turn(m_drive,navx, 5));
+
+    JoystickButton gripperMotors = new JoystickButton(xbox, XboxController.Button.kB.value);
+    gripperMotors.whileTrue(new SetGripperSpeed(m_gripper, 0.2));
+    gripperMotors.whileFalse(new SetGripperSpeed(m_gripper, 0));
+
+
   }
 
   private void configureEventMap() {
@@ -143,6 +153,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand(String location) {
+    System.out.print(location);
     List<PathPlannerTrajectory> pathGroup = null;
     PathConstraints pc = new PathConstraints(Constants.PATH_MAX_VELOCITY, Constants.PATH_MAX_ACCELERATION);
 
@@ -162,8 +173,8 @@ public class RobotContainer {
       pathGroup = PathPlanner.loadPathGroup("auto1", pc);
       break;
       case "Do Nothing":
-      pathGroup = PathPlanner.loadPathGroup("doNothing", new PathConstraints(0, 0));
-      break;
+        return null;
+      //pathGroup = PathPlanner.loadPathGroup("doNothing", new PathConstraints(0, 0));
 
     }
 
