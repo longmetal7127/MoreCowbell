@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.Currency;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -19,44 +21,30 @@ import frc.robot.Constants;
 
 public class ArmTrain extends SubsystemBase {
   // Define the Spark Max motor controllers for the arm train
-  private int currentAdjustment = 0;
   private CANSparkMax armMotor = new CANSparkMax(Constants.armMotor, MotorType.kBrushless);
   private SparkMaxPIDController pidControl;
-  
-  /* 
-   * Ideally, heights is an array such that:
-   * Index 0 is within the robot in order to hold the arm steady
-   * Index 1 is the height to pick up cones and cubes; ideally this will work for both
-   * Index 2 is the height to carry game pieces at; this should still be low. This is also going to work for the bottom gate drop
-   * Index 3 is the middle level of the gates (should be at the height of the middle cone pole; this should work for the cubes too) AND the Player Station
-   * Index 4 is the the top level of the gates (should be at the height of the top cone pole; this should work for the cubes too)
-   * Note: In a pinch, Index 3 will also work for the top cube. It will NOT work for the top cone. 
-   */
-  private int currentHeightIndice = 0;
 
   // Create an encoder for the controller
   private RelativeEncoder encoder = armMotor.getEncoder();
 
+  // Arm PID
   public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
-  public NetworkTable m_table;
-  public DoublePublisher sub;
 
   public ArmTrain() {
-    m_table = NetworkTableInstance.getDefault().getTable("robot");
-    sub = m_table.getDoubleTopic("arm").publish();
     // Restoring Factory Defaults for motor controller
     armMotor.restoreFactoryDefaults();
     pidControl = armMotor.getPIDController();
 
     // PID coefficients
-    //If you touch these values, be VERY CAREFUL. We tried making kI 0.005 and it almost broke the arm.
+    // If you touch these values, be VERY CAREFUL. We tried making kI 0.005 and it
+    // almost broke the arm.
     kP = 0.05;
     kI = 0;
     kD = 0.05;
     kIz = 0;
     kFF = 0;
-    kMaxOutput = 0.6;
-    kMinOutput = -0.6;
+    kMaxOutput = 1;
+    kMinOutput = -1;
 
     // set PID coefficients
     pidControl.setP(kP);
@@ -65,29 +53,19 @@ public class ArmTrain extends SubsystemBase {
     pidControl.setIZone(kIz);
     pidControl.setFF(kFF);
     pidControl.setOutputRange(kMinOutput, kMaxOutput);
-    pidControl.setSmartMotionMaxAccel(5,0);
+    pidControl.setSmartMotionMaxAccel(5, 0);
   }
 
-  public void calibrate() {
-
-  }
-
-  // Spark max pid controller
-  // SparkMaxPIDController
-  public void zero() {
-    encoder.setPosition(0);
+  public double convertAngleToEncoderValue(double angle) {
+    return angle;
   }
 
   public void rotate(double angle) {
-    if (angle > 90) {
-      angle = 90;
+    if (angle < Constants.MAX_ARM_HEIGHT) {
+      angle = Constants.MAX_ARM_HEIGHT;
     }
 
-    double encoderValue = angle * Constants.ARM_GEAR_RATIO / 304.5;
-    // Should not need anymore due to limit swtich
-    /*if (encoderValue > 0) {
-      encoderValue = 0;
-    }*/
+    double encoderValue = convertAngleToEncoderValue(angle);
 
     pidControl.setReference(encoderValue, ControlType.kPosition);
   }
@@ -97,61 +75,26 @@ public class ArmTrain extends SubsystemBase {
       angle = 90;
     }
 
-    double encoderValue = angle * Constants.ARM_GEAR_RATIO / 304.5;
+    double encoderValue = convertAngleToEncoderValue(angle);
     double encoderPosition = encoder.getPosition();
-
-    System.out.println(encoderPosition);
 
     double tolerance = 3;
 
     return encoderPosition > (encoderValue - tolerance) && encoderPosition < (encoderValue + tolerance);
   }
 
-  public void moveUp() {
-    currentAdjustment = 0;
-    if (currentHeightIndice == Constants.ARM_HEIGHTS.length - 1) {
-      currentHeightIndice = 0;
-    } else {
-      currentHeightIndice++;
-    }
-
-    rotate(Constants.ARM_HEIGHTS[currentHeightIndice]);
-  }
-
   public void fineMoveUp() {
-    currentAdjustment-= 5;
-    rotate(Constants.ARM_HEIGHTS[currentHeightIndice] + currentAdjustment);
+    rotate(encoder.getPosition() - Constants.ARM_FINE_ADJUST);
   }
 
   public void fineMoveDown() {
-    currentAdjustment += 5;
-    rotate(Constants.ARM_HEIGHTS[currentHeightIndice] + currentAdjustment);
-  }
-
-  public void moveDown() {
-    currentAdjustment = 0;
-
-    if (currentHeightIndice == 0) {
-      currentHeightIndice = Constants.ARM_HEIGHTS.length - 1;
-    } else {
-      currentHeightIndice--;
-    }
-
-    rotate(Constants.ARM_HEIGHTS[currentHeightIndice]);
-  }
-
-  public void reset() {
-    rotate(0);
+    rotate(encoder.getPosition() + Constants.ARM_FINE_ADJUST);
   }
 
   @Override
   public void periodic() {
     if (armMotor.getForwardLimitSwitch(Type.kNormallyOpen).isPressed()) {
-      /*double pos = encoder.getPosition();
-      double angle = pos / (Constants.ARM_GEAR_RATIO / 304.5);*/
-      //System.out.println("limit switch pressed");
       encoder.setPosition(0);
     }
   }
 }
- 

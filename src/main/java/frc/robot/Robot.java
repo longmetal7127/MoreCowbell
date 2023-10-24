@@ -12,6 +12,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
+import com.revrobotics.ColorSensorV3;
+
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.util.Color;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to
@@ -29,8 +34,10 @@ public class Robot extends TimedRobot {
   private static final String kAuto3 = "Auto 3";
   private static final String kDoNothing = "Do Nothing";
 
-  private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+
+  private final I2C.Port i2cPort = I2C.Port.kMXP;
+  private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -40,16 +47,15 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     // Instantiate our RobotContainer. This will perform all our button bindings,
-    // and put our
-    // autonomous chooser on the dashboard.
+    // and put our autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
     m_chooser.setDefaultOption("Auto 1", kAuto1);
     m_chooser.addOption("Auto 2", kAuto2);
     m_chooser.addOption("Auto 3", kAuto3);
     m_chooser.addOption("Do Nothing", kDoNothing);
 
-    SmartDashboard.putData("Auto Selector", m_chooser);
-
+    SmartDashboard.putData("Auto Choices", m_chooser);
   }
 
   /**
@@ -71,6 +77,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods. This must be called from the
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
+    System.out.println("color " + m_colorSensor.getColor() + " " + m_colorSensor.getProximity());
 
     CommandScheduler.getInstance().run();
   }
@@ -90,9 +97,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand(m_autoSelected);
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand(m_chooser.getSelected());
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {

@@ -22,10 +22,17 @@ public final class Constants {
   public static int rightFront = 1;
   public static int rightBack = 2;
 
+  // Drive slew limitations
+  public static double SLEW_X_LIMIT = 0.75;
+  public static double SLEW_Y_LIMIT = 0.75;
+  public static double SLEW_Z_LIMIT = 1.4;
+
   // Arm motor controller
   public static int armMotor = 5;
 
-  // Driverstation ports 
+  public static int gripperMotorsId = 7; 
+
+  // Driverstation ports
   public static int joystickPort = 0; // USB port on driver station computer
   public static int xboxPort = 1;
 
@@ -55,5 +62,11 @@ public final class Constants {
   public static double PATH_MAX_ACCELERATION = 2;
 
   // Arm heights for cycling and auto mode
-  public static final double ARM_HEIGHTS[] = { 0, -0.2, -20.2, -85.2, -130 };
+  public static final double MAX_ARM_HEIGHT = -160;
+  public static final double ARM_FINE_ADJUST = 6;
+  public static final double ARM_HEIGHTS[] = { 0, -48, -102, -120 };
+
+  // Gripper speeds
+  public static final double GRIPPER_FORWARD_SPEED = 0;
+  public static final double GRIPPER_BACKWARD_SPEED = -0.5;
 }

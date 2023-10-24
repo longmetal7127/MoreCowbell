@@ -5,14 +5,11 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.math.kinematics.MecanumDriveMotorVoltages;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.numbers.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.*;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -88,8 +85,8 @@ public class Limelight extends SubsystemBase {
   @Override
   public void periodic() {
     Pose2d pose = getRobotPose2d();
-    System.out.println("periodic - X: " + pose.getX() + " Y: " + pose.getY());
-    System.out.println();
+    /*System.out.println("periodic - X: " + pose.getX() + " Y: " + pose.getY());
+    System.out.println();*/
 
     if(pose.getX() != 0 && pose.getY() != 0) {
       //poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp());

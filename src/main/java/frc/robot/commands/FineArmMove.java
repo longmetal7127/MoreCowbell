@@ -8,26 +8,23 @@ public class FineArmMove extends CommandBase {
     private Boolean up;
     private Boolean isFinished = false;
 
-    public FineArmMove(ArmTrain a, Boolean ups) {
-        addRequirements(a);
-        this.arm = a;
-        this.up = ups;
-
+    public FineArmMove(ArmTrain arm, Boolean up) {
+        addRequirements(arm);
+        this.arm = arm;
+        this.up = up;
     }
 
-    // @Override
     public void execute() {
         if (this.up) {
             arm.fineMoveUp();
         } else {
             arm.fineMoveDown();
         }
-        isFinished = true;
 
+        isFinished = true;
     }
 
     public boolean isFinished() {
         return isFinished;
     }
-
 }

@@ -48,7 +48,7 @@ public final class Autonomous extends SequentialCommandGroup {
           // replace target coords with real coords. probably need to change some ordering (parallel turning and driving?)
           new GoTo(m_drive, m_limelight, 6.83, 1.75, 0.15, 0.05),
           new ArmToPosition(m_arm, -100),
-          new ClawActuate(m_pneumatics, Value.kForward),
+          new ClawActuate(m_pneumatics, Value.kForward, true),
           new GoTo(m_drive, m_limelight, 6.83, 2.286, 0.15, 0.05),
           new GoTo(m_drive, m_limelight, 6.83, 4.265, 0.15, 0.05),
           new Balance(m_drive, navx)
@@ -67,10 +67,10 @@ public final class Autonomous extends SequentialCommandGroup {
           // replace target coords with real coords. probably need to change some ordering (parallel turning and driving?)
           new GoTo(m_drive, m_limelight, 6.83, 3.36, 0.15, 0.05),
           new ArmToPosition(m_arm, -100),
-          new ClawActuate(m_pneumatics, Value.kForward),
+          new ClawActuate(m_pneumatics, Value.kForward, true),
           new GoTo(m_drive, m_limelight, 1.12, 2.87, 0.15, 0.05),
           new Turn(m_drive, navx, 180),  
-          new ClawActuate(m_pneumatics, Value.kReverse),
+          new ClawActuate(m_pneumatics, Value.kReverse, true),
           new Turn(m_drive, navx, 180)
           /* Idea is: 
           * Move up to grid
@@ -87,10 +87,10 @@ public final class Autonomous extends SequentialCommandGroup {
           // replace target coords with real coords. probably need to change some ordering (parallel turning and driving?)
           new GoTo(m_drive, m_limelight, 6.83, 0.023, 0.15, 0.05),
           new ArmToPosition(m_arm, -100),
-          new ClawActuate(m_pneumatics, Value.kForward),
+          new ClawActuate(m_pneumatics, Value.kForward, true),
           new GoTo(m_drive, m_limelight, 1.12, 0.2499, 0.15, 0.05),
           new Turn(m_drive, navx, 180),  
-          new ClawActuate(m_pneumatics, Value.kReverse),
+          new ClawActuate(m_pneumatics, Value.kReverse, true),
           new Turn(m_drive, navx, 180)
           /* Idea is: 
           * Move up to grid
@@ -107,7 +107,7 @@ public final class Autonomous extends SequentialCommandGroup {
           // replace target coords with real coords. probably need to change some ordering (parallel turning and driving?)
           new GoTo(m_drive, m_limelight, 6.83, 1.75, 0.15, 0.05),
           new ArmToPosition(m_arm, -100),
-          new ClawActuate(m_pneumatics, Value.kForward),
+          new ClawActuate(m_pneumatics, Value.kForward, true),
           new GoTo(m_drive, m_limelight, 6.83, 2.286, 0.15, 0.05),
           new GoTo(m_drive, m_limelight, 6.83, 4.265, 0.15, 0.05),
           new Balance(m_drive, navx)
@@ -126,10 +126,10 @@ public final class Autonomous extends SequentialCommandGroup {
           // replace target coords with real coords. probably need to change some ordering (parallel turning and driving?)
           new GoTo(m_drive, m_limelight, -6.83, 3.36, 0.15, 0.05),
           new ArmToPosition(m_arm, -100),
-          new ClawActuate(m_pneumatics, Value.kForward),
+          new ClawActuate(m_pneumatics, Value.kForward, true),
           new GoTo(m_drive, m_limelight, -1.12, 2.87, 0.15, 0.05),
           new Turn(m_drive, navx, 180),  
-          new ClawActuate(m_pneumatics, Value.kReverse),
+          new ClawActuate(m_pneumatics, Value.kReverse, true),
           new Turn(m_drive, navx, 180)
           /* Idea is: 
           * Move up to grid
@@ -147,7 +147,7 @@ public final class Autonomous extends SequentialCommandGroup {
 
           new ArmToPosition(m_arm, -100),
           new WaitCommand(5),
-          new ClawActuate(m_pneumatics, Value.kReverse)
+          new ClawActuate(m_pneumatics, Value.kReverse, true)
           //new GoTo(m_drive, m_limelight, 6.83, 0.023, 0.15, 0.05)
           // new ClawActuate(m_pneumatics, Value.kForward),
           // new GoTo(m_drive, m_limelight, -1.12, 0.2499, 0.15, 0.05),

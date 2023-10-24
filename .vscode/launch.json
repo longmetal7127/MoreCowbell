@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Launch Main",
+      "request": "launch",
+      "mainClass": "frc.robot.Main",
+      "projectName": "7127Robot2023"
+    },
+    {
+      "type": "java",
       "name": "Launch GoToCubeGate",
       "request": "launch",
       "mainClass": "frc.robot.commands.GoToCubeGate",

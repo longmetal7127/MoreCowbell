@@ -16,6 +16,7 @@ import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
@@ -25,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class DriveTrain extends SubsystemBase {
+  private NavX navx;
 
   // Define the four Spark Max motor controllers for the drivetrain
   // There are two motor controllers for each side, one follower, and one master
@@ -33,9 +35,9 @@ public class DriveTrain extends SubsystemBase {
   private CANSparkMax m_rightFront = new CANSparkMax(Constants.rightFront, MotorType.kBrushless);
   private CANSparkMax m_rightBack = new CANSparkMax(Constants.rightBack, MotorType.kBrushless);
 
-  private SlewRateLimiter slewX = new SlewRateLimiter(0.75);
-  private SlewRateLimiter slewY = new SlewRateLimiter(0.75);
-  private SlewRateLimiter slewZ = new SlewRateLimiter(1.4);
+  private SlewRateLimiter slewX = new SlewRateLimiter(Constants.SLEW_X_LIMIT);
+  private SlewRateLimiter slewY = new SlewRateLimiter(Constants.SLEW_Y_LIMIT);
+  private SlewRateLimiter slewZ = new SlewRateLimiter(Constants.SLEW_Z_LIMIT);
 
   // Create a new DifferentialDrive object
   private MecanumDrive m_drive;
@@ -53,7 +55,9 @@ public class DriveTrain extends SubsystemBase {
 
   private SimpleMotorFeedforward mFF = new SimpleMotorFeedforward(0.1, 2.8, 1.5);
 
-  public DriveTrain() {
+  public DriveTrain(NavX navx) {
+    this.navx = navx;
+
     // Restoring Factory Defaults for each motor controller
     m_leftBack.restoreFactoryDefaults();
     m_rightBack.restoreFactoryDefaults();
@@ -169,7 +173,14 @@ public class DriveTrain extends SubsystemBase {
   public void drive(double y, double x, double z) {
     // Swapping x and y because of joystick
     //m_drive.driveCartesian(y, x, z);
-    m_drive.driveCartesian(slewX.calculate(y), slewY.calculate(x), slewZ.calculate(z));
+
+    // Robot oriented
+    //m_drive.driveCartesian(slewX.calculate(y), slewY.calculate(x), slewZ.calculate(z));
+
+    // Field oriented
+    Rotation2d rot2d = navx.getRotation2d();
+    //System.out.println("navx " + rot2d.getDegrees());
+    m_drive.driveCartesian(slewX.calculate(y), slewY.calculate(x), slewZ.calculate(z), rot2d.unaryMinus());
   }
 
   @Override

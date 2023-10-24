@@ -7,19 +7,22 @@ import frc.robot.subsystems.Pneumatics;
 public class ClawActuate extends CommandBase {
     private Pneumatics pnuematics;
     private Value direction;
+    private boolean shouldFinish;
     private boolean isFinished;
 
-    public ClawActuate(Pneumatics pnuematics, Value direction) {
+    public ClawActuate(Pneumatics pnuematics, Value direction, boolean shouldFinish) {
         this.pnuematics = pnuematics;
         this.direction = direction;
+        this.shouldFinish = shouldFinish;
 
         isFinished = false;
     }
 
     public void execute() {
         pnuematics.set(0, direction);
-
-        isFinished = true;
+        if(shouldFinish) {
+            isFinished = true;
+        }
     }
 
     public boolean isFinished() {
