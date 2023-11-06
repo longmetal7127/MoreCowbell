@@ -1,9 +1,13 @@
-# Longmetal Code 2023
+# More Cowbell
+The repository for More Cowbell.
+Instructions for running the robot are here: https://docs.longmetal.org/**
+
+## Longmetal Code 2023
 - Setup for 2023 year
 - Starting with mecanum drive
 - Minimum working setup
 
-
+## Graham wants to keep this stuff so here it is
 Made by Graham and Teddy
 
 https://www.firstinspires.org/robotics/frc/playing-field
